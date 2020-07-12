@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ item.name }}</h1>
+
+  <p><strong>Название:</strong> {{ item.name }}</p>
+  <p><strong>Описание:</strong> {{ item.summary }}</p>
+  <p><strong>Цена:</strong> {{ item.price }} руб.</p>
+  <p><strong>Доступность:</strong>{% if item.availability %} Да {% else %} Нет {% endif %}</p>
+  {% if item.availability %}<p><strong>Количество:</strong> {{ item.quantity }} </p> {% endif %}
+	
+  <a href="{% url 'item_update' item.item_id %}">Редактировать</a><a class="del-btn" href="{% url 'item_delete' item.item_id %}">Удалить</a>
+{% endblock %}

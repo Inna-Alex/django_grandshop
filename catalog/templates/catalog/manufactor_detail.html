@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ manufactor.name }}</h1>
+
+  <p><strong>Название:</strong> {{ manufactor.name }}</p>
+  <p><strong>Описание:</strong> {{ manufactor.summary }}</p>
+  
+  <a href="{% url 'manufactor_update' manufactor.manufactor_id %}">Редактировать</a><a class="del-btn" href="{% url 'manufactor_delete' manufactor.manufactor_id %}">Удалить</a>
+
+{% endblock %}

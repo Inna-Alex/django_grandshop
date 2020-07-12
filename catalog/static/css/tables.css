@@ -1,0 +1,18 @@
+.order_items_div {
+	margin-left:20px;
+	margin-top:20px
+}
+
+.order_detail_items table {
+	border-collapse:separate;
+	border-spacing: 10px;
+	border:1px solid #fff;
+}
+
+.order_detail_items table td {
+	border:1px solid #fff;
+}
+
+.order_detail_items table tr:nth-child(3n) td {
+	padding-bottom: 25px;
+}

@@ -1,0 +1,63 @@
+{% extends "base_generic.html" %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/tables.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h1>Ваш заказ</h1>
+
+  <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+  <p><strong>Комментарий:</strong> {{ order.comment }}</p>
+  <p><strong>Покупатель:</strong> {{ order.customer }}</p>
+  <a href="{% url 'order_delete' pk=order.order_id %}">Удалить заказ</a>
+  
+  <div style="" class="order_detail_items order_items_div">
+    <h4>Выбранные продукты</h4>
+	
+	{% if order_items %}
+		<table>
+			{% for item in order_items %}
+			<tr>
+				<td><strong>Продукт:</strong></td>
+				<td>{{item.orderitem}}</td>
+				<td>
+					<form action="{% url 'remove_items' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="order_item_id" value="{{item.order_item_id}}" />
+						<input type="hidden" name="order_id" value="{{order.order_id}}" />
+						<input type="submit" value="Удалить продукт">
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>Количество:</strong></td>
+				<td>{{item.quantity}}</td>
+				<td>
+					<form action="{% url 'orderitem_update' pk=item.order_item_id %}" method="post">
+						{% csrf_token %}
+
+						
+						<input type="hidden" name="quantity" value="{{item.quantity}}" />
+						<input type="hidden" name="price" value="{{item.price}}" />
+						
+						<input type="hidden" name="order_id" value="{{order.order_id}}" />
+						<input type="submit" value="Редактировать продукт">
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>Цена:</strong></td>
+				<td>{{item.price}} руб.</td>
+			</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<p>В ваш заказ не добавлено ни одного продукта</p>
+	{% endif %}
+	<a href="{% url 'orderitem_create' order.order_id %}">Добавить Продукт</a>
+  </div>
+
+
+{% endblock %}

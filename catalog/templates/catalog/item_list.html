@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Список продуктов</h1>
+
+    {% if item_list %}
+    <ul>
+
+      {% for item in item_list %}
+      <li>
+        <a href="{{ item.get_absolute_url }}">{{ item.name }}</a> 
+		<p>{{ item.summary }}</p>
+      </li>
+      {% endfor %}
+	  
+    </ul>
+    {% else %}
+      <p>В интернет-магазине не зарегистрировано ни одного продукта</p>
+    {% endif %}       
+	
+	<a href="{% url 'item_create' %}">Добавить продукт</a>
+{% endblock %}

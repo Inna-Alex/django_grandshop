@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Список категорий</h1>
+
+    {% if category_list %}
+    <ul>
+
+      {% for category in category_list %}
+      <li>
+        <a href="{{ category.get_absolute_url }}">{{ category.name }}</a> 
+		<p>{{ category.summary }}</p>
+      </li>
+      {% endfor %}
+	  
+    </ul>
+    {% else %}
+      <p>В интернет-магазине не зарегистрировано ни одной категории</p>
+    {% endif %} 
+	
+	<a href="{% url 'category_create' %}">Добавить категорию</a>
+{% endblock %}

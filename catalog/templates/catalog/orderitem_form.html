@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<form action="" method="post" data-get-order-item-price-url="{% url 'calculate_price' %}">
+        {% csrf_token %}
+        <table>
+        {{ form }}
+        </table>
+        <input type="submit" value="Добавить" />
+    </form>
+{% endblock %}
+
+{% load static %}
+
+{% block js %}
+<script src="{% static 'js/jslib.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Список производителей</h1>
+
+    {% if manufactor_list %}
+	
+    <ul>
+      {% for manufactor in manufactor_list %}
+      <li>
+        <a href="{{ manufactor.get_absolute_url }}">{{ manufactor.name }}</a> 
+		<p>{{ manufactor.summary }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+	
+	<h2>Лучший производитель по мнению покупателей 2020 г.</h2>
+	  <a href="">{{ great_manufactor_name }}</a> 
+	  <p>{{ great_manufactor_summary }}</p>
+    {% else %}
+      <p>В интернет-магазине не зарегистрировано ни одного производителя</p>
+    {% endif %}
+	
+	<a href="{% url 'manufactor_create' %}">Добавить производителя</a>
+{% endblock %}

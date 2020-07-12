@@ -1,0 +1,85 @@
+body {
+  padding-top: 56px;
+  background-color: #F8EBFE;
+}
+
+.bg-orange {
+	background-color: #FF8C00;
+}
+
+
+.font-dark-violet {
+	color: #6D0B7E;
+}
+
+.list-group-item:first-child {
+	margin-bottom: 5px;
+	border-radius: 2rem;
+}
+
+.list-group-item:last-child {
+	margin-top: 7px;
+	border-radius: 7rem;
+}
+
+.list-group-item {
+	background-color: rgba(109, 11, 126, 0.3);
+	margin-top: 7px;
+	margin-bottom: 7px;
+	border-radius: 2rem;
+}
+
+.lgi-active {
+	background-color: rgba(109, 11, 126, 0.6);
+	font-weight: bold;
+}
+
+.list-group-item {
+	color: #fff;
+}
+
+.navbar-brand {
+	font-weight: bold;
+}
+
+.navbar-dark .navbar-nav .active>.nav-link {
+	font-weight: bold;
+}
+
+.list-group-item:hover {
+	text-decoration: none;
+	color: #fff;
+	background-color: rgba(109, 11, 126, 0.6);
+	font-weight: bold;
+}
+
+.card-body {
+	background-color: rgba(242, 205, 253, 1);
+}
+
+.card-title a {
+	color: #6D0B7E;
+	font-weight: bold;
+}
+
+.rel {
+	position: relative;
+}
+
+.space50 {
+	margin-top: 50px;
+}
+
+.item-title {
+	margin-bottom: 0.75rem;
+	color: #6D0B7E;
+	font-weight: bold;
+}
+
+.item-price {
+	color: rgba(109, 11, 126, 1);
+}
+
+.del-btn {
+	margin-left:30px;
+}

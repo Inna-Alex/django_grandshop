@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+{% if auth_error %}
+  <p>Введены неверный логин/пароль. Попробуйте снова</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>У вас не хватает прав для просмотра этой страницы.</p>
+  {% else %}
+    <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+{% if not user.is_authenticated %}
+	<form method="post" action="{% url 'login' %}">
+	{% csrf_token %}
+	<table>
+	<tr>
+		<td>{{ form.username.label_tag }}</td>
+		<td>{{ form.username }}</td>
+	</tr>
+	<tr>
+		<td>{{ form.password.label_tag }}</td>
+		<td>{{ form.password }}</td>
+	</tr>
+	</table>
+
+	<input type="submit" value="login">
+	<input type="hidden" name="next" value="{{ next }}">
+	</form>
+{% else %}
+	<p>Вы уже вошли в систему</p>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ category.name }}</h1>
+
+  <p><strong>Название:</strong> {{ category.name }}</p>
+  <p><strong>Описание:</strong> {{ category.summary }}</p>
+  <p><strong>Доступность:</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
+  
+  <a href="{% url 'category_update' category.category_id %}">Редактировать</a><a class="del-btn" href="{% url 'category_delete' pk=category.category_id %}">Удалить</a>
+
+{% endblock %}
