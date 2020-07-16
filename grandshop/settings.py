@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'register.apps.RegisterConfig',
     'crispy_forms',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

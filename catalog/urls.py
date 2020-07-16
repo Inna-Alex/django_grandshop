@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
 from django.conf.urls import url
+
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -8,13 +9,13 @@ urlpatterns = [
     url(r'^manufactor/(?P<pk>\d+)$', views.ManufactorDetailView.as_view(), name='manufactor_detail'),
     url(r'^manufactor/create/$', views.ManufactorCreate.as_view(), name='manufactor_create'),
     url(r'^manufactor/(?P<pk>\d+)/update/$', views.ManufactorUpdate.as_view(), name='manufactor_update'),
-    url(r'^manufactor/(?P<pk>[-\w]+)/delete/$', views.ManufactorDelete.as_view(), name='manufactor_delete'),
+    url(r'^manufactor/(?P<pk>\d+)/delete/$', views.ManufactorDelete.as_view(), name='manufactor_delete'),
     
     url(r'^categories/$', views.CategoryListView.as_view(), name='categories'),
     url(r'^category/(?P<pk>\d+)$', views.CategoryDetailView.as_view(), name='category_detail'),
     url(r'^category/create/$', views.CategoryCreate.as_view(), name='category_create'),
     url(r'^category/(?P<pk>\d+)/update/$', views.CategoryUpdate.as_view(), name='category_update'),
-    url(r'^category/(?P<pk>[-\w]+)/delete/$', views.CategoryDelete.as_view(), name='category_delete'),
+    url(r'^category/(?P<pk>\d+)/delete/$', views.CategoryDelete.as_view(), name='category_delete'),
     
     url(r'^items/$', views.ItemListView.as_view(), name='items'),
     url(r'^item/(?P<pk>[-\w]+)$', views.ItemDetailView.as_view(), name='item_detail'),
