@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Manufactor, Category
+from .models import Category, Manufactor
+
 
 class ManufactorSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=200)
@@ -15,7 +16,8 @@ class ManufactorSerializer(serializers.Serializer):
 
         instance.save()
         return instance
-    
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category

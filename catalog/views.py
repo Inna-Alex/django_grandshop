@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from django.views import generic
 
-from .models import Manufactor, Category, Item, Order, OrderItem
-from .order_views import *
-from .order_item_views import *
-from .manufactor_views import *
 from .category_views import *
 from .item_views import *
+from .manufactor_views import *
+from .models import Category, Item, Manufactor
+from .order_item_views import *
+from .order_views import *
+
 
 def index(request):
     """
@@ -19,8 +19,7 @@ def index(request):
     return render(
         request,
         'index.html',
-        context={'num_manufactors':num_manufactors,
-                 'num_categories':num_categories,
-                 'num_items':num_items,}
+        context={'num_manufactors': num_manufactors,
+                 'num_categories': num_categories,
+                 'num_items': num_items}
     )
-

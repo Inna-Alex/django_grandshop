@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from .models import Manufactor
 from .serializers import ManufactorSerializer
 
+
 class ManufactorAPIView(APIView):
     def get(self, request):
         manufactors = Manufactor.objects.all()
@@ -25,7 +26,7 @@ class ManufactorAPIView(APIView):
         saved_manufactor = get_object_or_404(Manufactor.objects.all(), pk=pk)
         data = request.data.get('manufactor')
         serializer = ManufactorSerializer(instance=saved_manufactor,
-                        data=data, partial=True)
+                                          data=data, partial=True)
 
         if serializer.is_valid(raise_exception=True):
             manufactor_saved = serializer.save()
@@ -41,6 +42,3 @@ class ManufactorAPIView(APIView):
         return Response({
             "message": "Manufactor with id '{}' has been deleted".format(pk)
             }, status=204)
-
-
-        

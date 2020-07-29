@@ -59,7 +59,6 @@ ROOT_URLCONF = 'grandshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'OPTIONS': {
@@ -127,7 +126,7 @@ STATIC_URL = '/static/'
 
 TIME_ZONE = 'Europe/Moscow'
 
-CRISPY_TEMPLATE_PACK="bootstrap4"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = '/'
 
