@@ -15,11 +15,13 @@ def index(request):
     num_manufactors = Manufactor.objects.all().count()
     num_categories = Category.objects.all().count()
     num_items = Item.objects.all().count()
+    active_tab = '\'index\''
 
     return render(
         request,
         'index.html',
         context={'num_manufactors': num_manufactors,
                  'num_categories': num_categories,
-                 'num_items': num_items}
+                 'num_items': num_items,
+                 'active_tab': active_tab}
     )
