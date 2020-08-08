@@ -8,10 +8,17 @@ from .forms import OrderDetailModelForm
 from .forms import OrderItemCreateModelForm, OrderItemUpdateModelForm
 from .models import Item, Order, OrderItem
 
+active_tab = '\'orders\''
+
 
 class OrderItemListView(generic.ListView):
     model = OrderItem
     paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderItemListView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
+        return context
 
 
 class OrderItemDetailView(generic.DetailView):
@@ -46,7 +53,8 @@ def orderitem_create_view(request, order_id):
     return render(
         request,
         'catalog/orderitem_form.html',
-        context={'form': form, 'order_id': order_id}
+        context={'form': form, 'order_id': order_id,
+                 'active_tab': active_tab}
     )
 
 
@@ -71,7 +79,8 @@ def orderitem_update_view(request, pk):
                  'order_item_id': pk,
                  'orderitem': order_item.orderitem.item_id,
                  'quantity': quantity,
-                 'price': price}
+                 'price': price,
+                 'active_tab': active_tab}
     )
 
 
@@ -101,13 +110,12 @@ def calculate_price(request, orderitem=None):
     return JsonResponse(data)
 
 
-class OrderItemDelete(DeleteView):
+class OrderItemDeleteView(DeleteView):
     model = OrderItem
     success_url = reverse_lazy('orders')
 
 
-def show_order_detail_form(request, pk):
-    # model = Order
+def show_order_detail_view(request, pk):
     order = Order.objects.get(order_id=pk)
     order_items = OrderItem.objects.filter(order_id__exact=pk)
     form = OrderDetailModelForm()
@@ -121,10 +129,11 @@ def show_order_detail_form(request, pk):
     return render(request, 'catalog/order_detail.html', {
             'form': form,
             'order': order,
-            'order_items': order_items})
+            'order_items': order_items,
+            'active_tab': active_tab})
 
 
-def remove_order_detail_items(request):
+def remove_order_detail_items_view(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
         order_id = request.POST.get('order_id')
@@ -137,4 +146,5 @@ def remove_order_detail_items(request):
         return render(request, 'catalog/order_detail.html', {
             'form': form,
             'order': order,
-            'order_items': order_items})
+            'order_items': order_items,
+            'active_tab': active_tab})

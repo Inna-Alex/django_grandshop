@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/lib-css.css' %}">
   <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <script src="{% static 'js/vue.js' %}"></script>
   
   {% block css %}{% endblock %}
 </head>
@@ -60,19 +61,19 @@
 			<h1 class="my-4 font-dark-violet flash animated">Grand Shop</h1>
 		</span>
         <div class="list-group">
-		  <a href="{% url 'index' %}" class="list-group-item lgi-active">Главная</a>
-          <a href="{% url 'manufactors' %}" class="list-group-item">Производители</a>
-          <a href="{% url 'categories' %}" class="list-group-item">Категории</a>
-          <a href="{% url 'items' %}" class="list-group-item">Продукты</a>
+		  <a href="{% url 'index' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'index' ? 'lgi-active' : ''">Главная</a>
+          <a href="{% url 'manufactors' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'manufactors' ? 'lgi-active' : ''">Производители</a>
+          <a href="{% url 'categories' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'categories' ? 'lgi-active' : ''">Категории</a>
+          <a href="{% url 'items' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'items' ? 'lgi-active' : ''">Продукты</a>
 		  {% if user.is_authenticated %}
-			<a href="{% url 'orders' %}" class="list-group-item">Ваши заказы</a>
+			<a href="{% url 'orders' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'orders' ? 'lgi-active' : ''">Ваши заказы</a>
 		  {% endif %}
-		  <a href="{% url 'order_create' %}" class="list-group-item">Сделать заказ</a>
+		  <a href="{% url 'order_create' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'order_create' ? 'lgi-active' : ''">Сделать заказ</a>
 		  {% if user.is_authenticated %}
-			<a href="{% url 'logout'%}?next={{request.path}}" class="list-group-item">Выйти</a>
+			<a href="{% url 'logout'%}?next={{request.path}}" class="list-group-item" v-bind:class="{{active_tab}} === 'logout' ? 'lgi-active' : ''">Выйти</a>
 		  {% else %}
-			<a href="{% url 'login'%}?next={{request.path}}" class="list-group-item">Войти</a>
-			<a href="{% url 'register' %}" class="list-group-item">Зарегистрироваться</a>
+			<a href="{% url 'login'%}?next={{request.path}}" class="list-group-item" v-bind:class="{{active_tab}} === 'login' ? 'lgi-active' : ''">Войти</a>
+			<a href="{% url 'register' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'register' ? 'lgi-active' : ''">Зарегистрироваться</a>
 		  {% endif %}
         </div>
 	  </div>
@@ -88,6 +89,10 @@
   
   <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jsmain.js' %}"></script>
+  <script>
+
+  </script>
 
   {% block js %}{% endblock %}
   

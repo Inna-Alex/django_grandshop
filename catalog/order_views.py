@@ -9,24 +9,42 @@ from django.views.generic.edit import CreateView, UpdateView
 from .forms import OrderModelForm
 from .models import Order, OrderItem
 
+active_tab_orders = '\'orders\''
+active_tab_order_create = '\'order_create\''
+
 
 class OrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super(OrderListView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab_orders
+        return context
+
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user)
 
 
-class OrderCreate(LoginRequiredMixin, CreateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
     fields = ['comment']
     initial = {'status': 'c'}
 
+    def get_context_data(self, **kwargs):
+        context = super(OrderCreateView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab_order_create
+        return context
 
-class OrderUpdate(UpdateView):
+
+class OrderUpdateView(UpdateView):
     model = Order
     fields = ['comment', 'status']
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderUpdateView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab_order
+        return context
 
 
 def order_confirm_delete_form(request, pk):
@@ -52,4 +70,5 @@ def order_confirm_delete_form(request, pk):
 
     return render(request, 'catalog/order_confirm_delete.html', {
             'form': form,
-            'order': order})
+            'order': order,
+            'active_tab': active_tab_orders})
