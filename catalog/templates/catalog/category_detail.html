@@ -7,6 +7,8 @@
   <p><strong>Описание:</strong> {{ category.summary }}</p>
   <p><strong>Доступность:</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
   
-  <a href="{% url 'category_update' category.category_id %}">Редактировать</a><a class="del-btn" href="{% url 'category_delete' pk=category.category_id %}">Удалить</a>
-
+  <div class="list-group list-group-horizontal">
+	  <a href="{% url 'category_update' category.category_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
+	  <a href="{% url 'category_delete' pk=category.category_id %}" class="col-lg-3 list-group-item m-left-30 btn-del">Удалить</a>
+  </div>
 {% endblock %}

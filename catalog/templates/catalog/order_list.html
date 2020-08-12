@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Список заказов</h1>
+    <h1 class="inline-b m-top-20">Список заказов</h1><a href="{% url 'order_create' %}" class="btn-add right m-top-20">Создать заказ</a>
 
     {% if order_list %}
-    <ul>
+    <ul class="non-list">
 
       {% for order in order_list %}
       <li>
@@ -16,6 +16,5 @@
     </ul>
     {% else %}
       <p>В интернет-магазине не зарегистрировано ни одного заказа</p>
-    {% endif %} 
-	<a href="{% url 'order_create' %}">Создать заказ</a>
+    {% endif %}
 {% endblock %}

@@ -6,6 +6,9 @@
   <p><strong>Название:</strong> {{ manufactor.name }}</p>
   <p><strong>Описание:</strong> {{ manufactor.summary }}</p>
   
-  <a href="{% url 'manufactor_update' manufactor.manufactor_id %}">Редактировать</a><a class="del-btn" href="{% url 'manufactor_delete' manufactor.manufactor_id %}">Удалить</a>
+  <div class="list-group list-group-horizontal">
+	  <a href="{% url 'manufactor_update' manufactor.manufactor_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
+	  <a href="{% url 'manufactor_delete' manufactor.manufactor_id %}" class="col-lg-3 list-group-item m-left-30 btn-del">Удалить</a>
+  </div>
 
 {% endblock %}

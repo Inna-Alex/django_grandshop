@@ -9,5 +9,8 @@
   <p><strong>Доступность:</strong>{% if item.availability %} Да {% else %} Нет {% endif %}</p>
   {% if item.availability %}<p><strong>Количество:</strong> {{ item.quantity }} </p> {% endif %}
 	
-  <a href="{% url 'item_update' item.item_id %}">Редактировать</a><a class="del-btn" href="{% url 'item_delete' item.item_id %}">Удалить</a>
+  <div class="list-group list-group-horizontal">
+	  <a href="{% url 'item_update' item.item_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
+	  <a href="{% url 'item_delete' item.item_id %}" class="col-lg-3 list-group-item m-left-30 btn-del">Удалить</a>
+  </div>
 {% endblock %}
