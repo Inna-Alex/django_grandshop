@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Список продуктов</h1>
+    <h1 class="inline-b m-top-20">Список продуктов</h1><a href="{% url 'item_create' %}" class="btn-add right m-top-20">Добавить продукт</a>
 
     {% if item_list %}
-    <ul>
+    <ul class="non-list">
 
       {% for item in item_list %}
       <li>
@@ -17,6 +17,4 @@
     {% else %}
       <p>В интернет-магазине не зарегистрировано ни одного продукта</p>
     {% endif %}       
-	
-	<a href="{% url 'item_create' %}">Добавить продукт</a>
 {% endblock %}

@@ -11,7 +11,7 @@
   <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
   <p><strong>Комментарий:</strong> {{ order.comment }}</p>
   <p><strong>Покупатель:</strong> {{ order.customer }}</p>
-  <a href="{% url 'order_delete' pk=order.order_id %}">Удалить заказ</a>
+  <a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del">Удалить заказ</a>
   
   <div style="" class="order_detail_items order_items_div">
     <h4>Выбранные продукты</h4>
@@ -56,7 +56,7 @@
 	{% else %}
 		<p>В ваш заказ не добавлено ни одного продукта</p>
 	{% endif %}
-	<a href="{% url 'orderitem_create' order.order_id %}">Добавить Продукт</a>
+	<a href="{% url 'orderitem_create' order.order_id %}" class="btn-add">Добавить Продукт</a>
   </div>
 
 

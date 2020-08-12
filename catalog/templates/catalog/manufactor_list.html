@@ -1,11 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Список производителей</h1>
+    <h1 class="inline-b m-top-20">Список производителей</h1><a href="{% url 'manufactor_create' %}" class="btn-add right m-top-20">Добавить производителя</a>
 
     {% if manufactor_list %}
 	
-    <ul>
+    <ul class="non-list">
       {% for manufactor in manufactor_list %}
       <li>
         <a href="{{ manufactor.get_absolute_url }}">{{ manufactor.name }}</a> 
@@ -20,6 +20,4 @@
     {% else %}
       <p>В интернет-магазине не зарегистрировано ни одного производителя</p>
     {% endif %}
-	
-	<a href="{% url 'manufactor_create' %}">Добавить производителя</a>
 {% endblock %}

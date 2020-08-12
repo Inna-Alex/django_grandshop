@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Список категорий</h1>
+    <h1 class="inline-b m-top-20">Список категорий</h1><a href="{% url 'category_create' %}" class="btn-add right m-top-20">Добавить категорию</a>
 
     {% if category_list %}
-    <ul>
+    <ul class="non-list">
 
       {% for category in category_list %}
       <li>
@@ -17,6 +17,4 @@
     {% else %}
       <p>В интернет-магазине не зарегистрировано ни одной категории</p>
     {% endif %} 
-	
-	<a href="{% url 'category_create' %}">Добавить категорию</a>
 {% endblock %}
