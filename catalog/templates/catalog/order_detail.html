@@ -11,6 +11,7 @@
   <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
   <p><strong>Комментарий:</strong> {{ order.comment }}</p>
   <p><strong>Покупатель:</strong> {{ order.customer }}</p>
+  <p><strong>Дата создания:</strong> {{ order.created_date }}</p>
   <a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del">Удалить заказ</a>
   
   <div style="" class="order_detail_items order_items_div">
@@ -50,6 +51,10 @@
 			<tr>
 				<td><strong>Цена:</strong></td>
 				<td>{{item.price}} руб.</td>
+			</tr>
+			<tr>
+				<td><strong>Дата добавления<br>в заказ:</strong></td>
+				<td>{{item.created_date}}</td>
 			</tr>
 			{% endfor %}
 		</table>

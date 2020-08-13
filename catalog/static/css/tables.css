@@ -13,6 +13,6 @@
 	border:1px solid #fff;
 }
 
-.order_detail_items table tr:nth-child(3n) td {
+.order_detail_items table tr:nth-child(4n) td {
 	padding-bottom: 25px;
 }

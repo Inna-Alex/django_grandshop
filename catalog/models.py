@@ -16,6 +16,9 @@ class Manufactor(models.Model):
                             help_text="Введите название производителя")
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
                                help_text="Введите описание производителя")
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата создания производителя")
 
     def get_absolute_url(self):
         return reverse('manufactor_detail', args=[str(self.manufactor_id)])
@@ -25,6 +28,9 @@ class Manufactor(models.Model):
 
     class Meta:
         ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+            ]
 
 
 class Category(models.Model):
@@ -39,6 +45,9 @@ class Category(models.Model):
     availability = models.BooleanField(default=False,
                                        verbose_name=_('Доступность'),
                                        help_text="Выберите если категория доступна")
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата создания категории")
 
     def get_absolute_url(self):
         return reverse('category_detail', args=[str(self.category_id)])
@@ -48,6 +57,9 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+            ]
 
 
 class Item(models.Model):
@@ -74,6 +86,9 @@ class Item(models.Model):
                                        help_text="Выберите если продукт есть в наличии")
     quantity = models.IntegerField(verbose_name=_('Количество'),
                                    help_text="Введите количество продукта")
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата создания продукта")
 
     def get_absolute_url(self):
         return reverse('item_detail', args=[str(self.item_id)])
@@ -83,6 +98,9 @@ class Item(models.Model):
 
     class Meta:
         ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+            ]
 
 
 class Order(models.Model):
@@ -94,6 +112,10 @@ class Order(models.Model):
     comment = models.CharField(max_length=500, verbose_name=_('Комментарий'),
                                help_text="Комментарий к заказу")
     customer = CurrentUserField()
+
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата создания заказа")
 
     ORDER_STATUS = (
         ('c', 'Создан'),
@@ -111,8 +133,9 @@ class Order(models.Model):
     def __str__(self):
         return self.comment
 
-    # class Meta:
-    # ordering = ['name']
+    indexes = [
+            models.Index(fields=['created_date'])
+            ]
 
 
 class OrderItem(models.Model):
@@ -130,12 +153,12 @@ class OrderItem(models.Model):
                                    help_text="Введите количество продукта")
     price = models.DecimalField(max_digits=10, verbose_name=_('Цена'),
                                 decimal_places=2)
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата добавления продукта")
 
     def get_absolute_url(self):
         return reverse('orderitem_detail', args=[str(self.order_item_id)])
 
     def __str__(self):
         return str(self.order_item_id)
-
-    # class Meta:
-    # ordering = ['name']
