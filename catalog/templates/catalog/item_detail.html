@@ -8,6 +8,7 @@
   <p><strong>Цена:</strong> {{ item.price }} руб.</p>
   <p><strong>Доступность:</strong>{% if item.availability %} Да {% else %} Нет {% endif %}</p>
   {% if item.availability %}<p><strong>Количество:</strong> {{ item.quantity }} </p> {% endif %}
+  <p><strong>Дата создания:</strong> {{ item.created_date }}</p>
 	
   <div class="list-group list-group-horizontal">
 	  <a href="{% url 'item_update' item.item_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>

@@ -61,4 +61,6 @@ urlpatterns = [
         views.orderitem_update_save_view, name='orderitem_update_save'),
     url(r'^orderitem/(?P<pk>[-\w]+)/delete/$', views.OrderItemDeleteView.as_view(),
         name='orderItem_delete'),
+
+    url(r'^categories_raw/$', views.category_raw, name='categories_raw'),
 ]

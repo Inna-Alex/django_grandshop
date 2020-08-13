@@ -5,6 +5,7 @@
 
   <p><strong>Название:</strong> {{ manufactor.name }}</p>
   <p><strong>Описание:</strong> {{ manufactor.summary }}</p>
+  <p><strong>Дата создания:</strong> {{ manufactor.created_date }}</p>
   
   <div class="list-group list-group-horizontal">
 	  <a href="{% url 'manufactor_update' manufactor.manufactor_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>

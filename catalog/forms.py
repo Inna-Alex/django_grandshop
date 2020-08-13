@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Order, OrderItem
+from .models import Category, Order, OrderItem
 
 
 class OrderModelForm(ModelForm):
@@ -42,3 +42,9 @@ class OrderItemUpdateModelForm(ModelForm):
         labels = {'orderitem': _('Продукт'),
                   'quantity': _('Количество'),
                   'price': _('Цена, руб.')}
+
+
+class CategoryRawModelForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'summary', 'availability']
