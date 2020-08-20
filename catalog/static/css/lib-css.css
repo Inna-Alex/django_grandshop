@@ -188,3 +188,33 @@ body {
 .non-list {
 	list-style-type:none;
 }
+
+.non-list li:hover {
+    background-color: rgb(255, 140, 0, .5);
+    font-weight: bold;
+}
+
+.one-by-one {
+    background-color: rgb(255, 140, 0, .2);
+    transition: .2s;
+}
+
+.non-a {
+    color: rgba(0,0,0);
+    text-decoration: none;
+}
+
+.non-a:hover {
+	color: rgba(0,0,0);
+	text-decoration: none;
+}
+
+.to-shadow {
+    text-shadow: 1px 1px rgba(0,0,0,.3);
+	box-shadow:
+		inset 0 0 3px 1px rgba(0,0,0,.8),
+		inset rgba(0,0,0,.3) -5px -5px 8px 5px,
+		inset rgba(255,255,255,.5) 5px 5px 8px 5px,
+		1px 1px 1px rgba(255,255,255,.1),
+		-2px -2px 5px rgba(0,0,0,.5);
+}
