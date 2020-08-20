@@ -40,7 +40,8 @@ class ItemCreateView(CreateView):
 
 class ItemUpdateView(UpdateView):
     model = Item
-    fields = ['name', 'summary', 'availability', 'price', 'quantity']
+    fields = ['manufactor', 'category', 'name', 'summary', 'availability',
+              'price', 'quantity']
 
     def get_context_data(self, **kwargs):
         context = super(ItemUpdateView, self).get_context_data(**kwargs)

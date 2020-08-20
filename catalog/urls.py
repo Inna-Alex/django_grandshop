@@ -63,4 +63,10 @@ urlpatterns = [
         name='orderItem_delete'),
 
     url(r'^categories_raw/$', views.category_raw, name='categories_raw'),
+    url(r'^categories_raw_one/$', views.category_raw_one,
+        name='categories_raw_one'),
+    url(r'^categories_raw_all/$', views.category_raw_all,
+        name='categories_raw_all'),
+    url(r'^categories_raw_by_func/$', views.category_raw_by_func,
+        name='categories_raw_by_func'),
 ]

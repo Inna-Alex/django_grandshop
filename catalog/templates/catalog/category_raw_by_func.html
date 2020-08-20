@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  {% for category in category_objs %}
+	  <h1>Категория с максимальным числом продуктов</h1>
+	  <p><strong>Название:</strong> {{ category.name }}</p>
+	  <p><strong>Описание:</strong> {{ category.summary }}</p>
+	  <p><strong>Доступность:</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
+	  <p><strong>Дата создания:</strong> {{ category.created_date }}</p>
+	  <br>
+  {% endfor %}
+  
+{% endblock %}
