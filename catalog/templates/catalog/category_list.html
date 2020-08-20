@@ -7,10 +7,11 @@
     <ul class="non-list">
 
       {% for category in category_list %}
-      <li>
-        <a href="{{ category.get_absolute_url }}">{{ category.name }}</a> 
-		<p>{{ category.summary }}</p>
-      </li>
+        {% cycle 'one-by-one' '' as categcolors silent %}
+          <li class="{{ categcolors }}">
+            <a href="{{ category.get_absolute_url }}" class="non-a">{{ category.name }}
+            <p>{{ category.summary }}</p></a>
+          </li>
       {% endfor %}
 	  
     </ul>
