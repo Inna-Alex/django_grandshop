@@ -6,7 +6,7 @@
   <p><strong>Название:</strong> {{ category.name }}</p>
   <p><strong>Описание:</strong> {{ category.summary }}</p>
   <p><strong>Доступность:</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
-  <p><strong>Дата создания:</strong> {{ category.created_date }}</p>
+  <p><strong>Дата создания:</strong> {{ category.created_date|date:"d.m.Y H:i:s" }}</p>
   
   <div class="list-group list-group-horizontal">
 	  <a href="{% url 'category_update' category.category_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>

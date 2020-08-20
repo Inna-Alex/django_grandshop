@@ -3,12 +3,14 @@
 {% block content %}
   <h1>{{ item.name }}</h1>
 
+  <p><strong>Производитель:</strong> {{ item.manufactor.name }}</p>
+  <p><strong>Категория:</strong> {{ item.category.name }}</p>
   <p><strong>Название:</strong> {{ item.name }}</p>
   <p><strong>Описание:</strong> {{ item.summary }}</p>
   <p><strong>Цена:</strong> {{ item.price }} руб.</p>
   <p><strong>Доступность:</strong>{% if item.availability %} Да {% else %} Нет {% endif %}</p>
   {% if item.availability %}<p><strong>Количество:</strong> {{ item.quantity }} </p> {% endif %}
-  <p><strong>Дата создания:</strong> {{ item.created_date }}</p>
+  <p><strong>Дата создания:</strong> {{ item.created_date|date:"d.m.Y H:i:s" }}</p>
 	
   <div class="list-group list-group-horizontal">
 	  <a href="{% url 'item_update' item.item_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
