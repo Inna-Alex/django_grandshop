@@ -7,12 +7,34 @@
 
 {% block content %}
   <h1>Ваш заказ</h1>
+  <table>
+	  <tr>
+		  <td class="font-weight-bold">Статус:</td>
+		  <td class="p-left-10">{{ order.get_status_display }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Комментарий:</td>
+		  <td class="p-left-10">{{ order.comment }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Покупатель:</td>
+		  <td class="p-left-10">{{ order.customer }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Дата создания:</td>
+		  <td class="p-left-10">{{ order.created_date | date:"d.m.Y H:i:s" }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Заказ создан:</td>
+		  <td class="p-left-10">{{ sincetime }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">До даты доставки<br>заказа осталось:</td>
+		  <td class="p-left-10">{{ order.delivery_date | timeuntil }}</td>
+	  </tr>
+  </table>
 
-  <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
-  <p><strong>Комментарий:</strong> {{ order.comment }}</p>
-  <p><strong>Покупатель:</strong> {{ order.customer }}</p>
-  <p><strong>Дата создания:</strong> {{ order.created_date|date:"d.m.Y H:i:s" }}</p>
-  <a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del">Удалить заказ</a>
+  <a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del m-top-20">Удалить заказ</a>
   
   <div style="" class="order_detail_items order_items_div">
     <h4>Выбранные продукты</h4>
@@ -21,7 +43,7 @@
 		<table>
 			{% for item in order_items %}
 			<tr>
-				<td><strong>Продукт:</strong></td>
+				<td class="font-weight-bold">Продукт:</td>
 				<td>{{item.orderitem}}</td>
 				<td>
 					<form action="{% url 'remove_items' %}" method="post">
@@ -33,7 +55,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><strong>Количество:</strong></td>
+				<td class="font-weight-bold">Количество:</td>
 				<td>{{item.quantity}}</td>
 				<td>
 					<form action="{% url 'orderitem_update' pk=item.order_item_id %}" method="post">
@@ -49,11 +71,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td><strong>Цена:</strong></td>
+				<td class="font-weight-bold">Цена:</td>
 				<td>{{item.price}} руб.</td>
 			</tr>
 			<tr>
-				<td><strong>Дата добавления<br>в заказ:</strong></td>
+				<td class="font-weight-bold">Дата добавления<br>в заказ:</td>
 				<td>{{item.created_date|date:"d.m.Y H:i:s"}}</td>
 			</tr>
 			{% endfor %}

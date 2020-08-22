@@ -9,8 +9,11 @@
       {% for manufactor in manufactor_list %}
         {% cycle 'one-by-one' '' as manufcolors silent %}
           <li class="{{ manufcolors }}">
-            <a href="{{ manufactor.get_absolute_url }}" class="non-a">{{ manufactor.name }}
-            <p>{{ manufactor.summary }}</p></a>
+              {% load catalog_tags %}
+              {% filter my_to_lower %}
+                <a href="{{ manufactor.get_absolute_url }}" class="non-a">{{ manufactor.name }}
+                <p>{{ manufactor.summary | truncatechars:20 }}</p></a>
+              {% endfilter %}
           </li>
       {% endfor %}
     </ul>

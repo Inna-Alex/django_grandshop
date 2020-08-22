@@ -3,16 +3,44 @@
 {% block content %}
   <h1>{{ item.name }}</h1>
 
-  <p><strong>Производитель:</strong> {{ item.manufactor.name }}</p>
-  <p><strong>Категория:</strong> {{ item.category.name }}</p>
-  <p><strong>Название:</strong> {{ item.name }}</p>
-  <p><strong>Описание:</strong> {{ item.summary }}</p>
-  <p><strong>Цена:</strong> {{ item.price }} руб.</p>
-  <p><strong>Доступность:</strong>{% if item.availability %} Да {% else %} Нет {% endif %}</p>
-  {% if item.availability %}<p><strong>Количество:</strong> {{ item.quantity }} </p> {% endif %}
-  <p><strong>Дата создания:</strong> {{ item.created_date|date:"d.m.Y H:i:s" }}</p>
+  <table>
+	  <tr>
+		  <td class="font-weight-bold">Производитель:</td>
+		  <td class="p-left-10">{{ item.manufactor.name }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Категория:</td>
+		  <td class="p-left-10">{{ item.category.name }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Название:</td>
+		  <td class="p-left-10">{{ item.name }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Описание:</td>
+		  <td class="p-left-10">{{ item.summary }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Цена:</td>
+		  <td class="p-left-10">{{ item.price }} руб.</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Доступность:</td>
+		  <td class="p-left-10">{% if item.availability %} Да {% else %} Нет {% endif %}</td>
+	  </tr>
+      {% if item.availability %}
+        <tr>
+            <td class="font-weight-bold">Количество:</td>
+            <td class="p-left-10">{{ item.quantity }}</td>
+        </tr>
+      {% endif %}
+      <tr>
+		  <td class="font-weight-bold">Дата создания:</td>
+		  <td class="p-left-10">{{ item.created_date|date:"d.m.Y H:i:s" }}</td>
+	  </tr>
+  </table>
 	
-  <div class="list-group list-group-horizontal">
+  <div class="list-group list-group-horizontal m-top-20">
 	  <a href="{% url 'item_update' item.item_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
 	  <a href="{% url 'item_delete' item.item_id %}" class="col-lg-3 list-group-item m-left-30 btn-del">Удалить</a>
   </div>
