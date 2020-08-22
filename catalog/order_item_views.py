@@ -1,12 +1,13 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.template.defaultfilters import timesince
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.views.generic.edit import DeleteView
 
 from .forms import OrderDetailModelForm
 from .forms import OrderItemCreateModelForm, OrderItemUpdateModelForm
-from .models import Item, Order, OrderItem
+from .models import Item, Order, OrderItem, ru_time_strings
 
 active_tab = '\'orders\''
 
@@ -119,6 +120,8 @@ def show_order_detail_view(request, pk):
     order = Order.objects.get(order_id=pk)
     order_items = OrderItem.objects.filter(order_id__exact=pk)
     form = OrderDetailModelForm()
+    since_time = "{} назад".format(timesince(order.created_date, time_strings=ru_time_strings))
+
     if request.method == 'POST':
         form = OrderDetailModelForm(data=request.POST)
         if form.is_valid():
@@ -129,6 +132,7 @@ def show_order_detail_view(request, pk):
     return render(request, 'catalog/order_detail.html', {
             'form': form,
             'order': order,
+            'sincetime': since_time,
             'order_items': order_items,
             'active_tab': active_tab})
 

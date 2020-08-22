@@ -43,7 +43,7 @@ class OrderUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(OrderUpdateView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab_order
+        context['active_tab'] = active_tab_orders
         return context
 
 

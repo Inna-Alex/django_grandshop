@@ -202,6 +202,7 @@ body {
 .non-a {
     color: rgba(0,0,0);
     text-decoration: none;
+    cursor: pointer;
 }
 
 .non-a:hover {
@@ -217,4 +218,8 @@ body {
 		inset rgba(255,255,255,.5) 5px 5px 8px 5px,
 		1px 1px 1px rgba(255,255,255,.1),
 		-2px -2px 5px rgba(0,0,0,.5);
+}
+
+.p-left-10 {
+    padding-left: 10px;
 }

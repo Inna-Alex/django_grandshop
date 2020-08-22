@@ -1,10 +1,20 @@
+from datetime import date, timedelta
 import uuid
 
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ngettext_lazy, ugettext_lazy as _
 
 from django_currentuser.db.models import CurrentUserField
+
+ru_time_strings = {
+    'year': ngettext_lazy('%d год', '%d лет'),
+    'month': ngettext_lazy('%d месяц', '%d месяцев'),
+    'week': ngettext_lazy('%d неделя', '%d недели'),
+    'day': ngettext_lazy('%d день', '%d дней'),
+    'hour': ngettext_lazy('%d час', '%d часов'),
+    'minute': ngettext_lazy('%d минута', '%d минут'),
+}
 
 
 class Manufactor(models.Model):
@@ -116,6 +126,10 @@ class Order(models.Model):
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания заказа")
+
+    delivery_date = models.DateField(default=date.today() + timedelta(days=5),
+                                     verbose_name="Дата доставки",
+                                     help_text="Дата доставки заказа")
 
     ORDER_STATUS = (
         ('c', 'Создан'),
