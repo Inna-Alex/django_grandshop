@@ -34,6 +34,7 @@ urlpatterns = [
         name='item_update'),
     url(r'^item/(?P<pk>[-\w]+)/delete/$', views.ItemDeleteView.as_view(),
         name='item_delete'),
+    url(r'^items/news/$', views.ItemNewsListView.as_view(), name='item_news'),
 
     url(r'^orders/$', views.OrderListView.as_view(), name='orders'),
     url(r'^order/(?P<pk>[-\w]+)$', views.show_order_detail_view,
