@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1 class="inline-b m-top-20">Новинки</h1>
+
+    {% if item_list %}
+    <ul class="non-list">
+
+      {% for item in item_list %}
+        {% cycle 'one-by-one' '' as itemcolors silent %}
+          <li class="{{ itemcolors }}">
+            <a href="{{ item.get_absolute_url }}" class="non-a">{{ item.name }}
+            <p>{{ item.summary }}</p></a>
+          </li>
+      {% endfor %}
+	  
+    </ul>
+    {% else %}
+      <p>На данный момент новинок нет</p>
+    {% endif %}       
+{% endblock %}

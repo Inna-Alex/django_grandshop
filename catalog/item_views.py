@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -16,8 +18,13 @@ class ItemListView(generic.ListView):
         context['active_tab'] = active_tab
         return context
 
+    def get_queryset(self):
+        date_10_days = date.today() - timedelta(days=10)
+        return Item.objects.extra(select={'is_recent': 'created_date > %s'},
+                                  select_params=(date_10_days,))
 
-# CRUD
+
+# CRUD start
 class ItemDetailView(generic.DetailView):
     model = Item
     
@@ -57,3 +64,19 @@ class ItemDeleteView(DeleteView):
         context = super(ItemDeleteView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
         return context
+# CRUD end
+
+
+class ItemNewsListView(generic.ListView):
+    model = Item
+    paginate_by = 10
+    template_name = 'catalog/item_news_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemNewsListView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
+        return context
+
+    def get_queryset(self):
+        date_10_days = date.today() - timedelta(days=10)
+        return Item.objects.filter(created_date__gte=date_10_days)
