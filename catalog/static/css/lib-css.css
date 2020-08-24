@@ -229,12 +229,6 @@ body {
 }
 
 .btn-new {
-    /*background-color: rgb(255, 192, 203)*/    /* розовый*/
-    background-color: rgb(0, 191, 255);     /* голубой*/
-}
-
-.btn-new {
-    /*background: rgb(0, 191, 255);*/
     background: rgb(10, 201, 235);
     border-radius: 2rem;
     box-shadow:
@@ -254,7 +248,6 @@ body {
 	transition: .2s;
 }
 .btn-new:hover {
-    /*background: rgb(10, 201, 235);*/
     background: rgb(0, 191, 255);
 	color: rgba(255,255,255,.9);
 	text-decoration: none;
