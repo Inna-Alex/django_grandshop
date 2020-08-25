@@ -2,6 +2,8 @@ from datetime import date, timedelta
 import uuid
 
 from django.db import models
+from django.db.models import Transform
+from django.db.models.fields import Field, IntegerField
 from django.urls import reverse
 from django.utils.translation import ngettext_lazy, ugettext_lazy as _
 
@@ -99,6 +101,8 @@ class Item(models.Model):
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания продукта")
+    last_accessed = models.DateTimeField(verbose_name=_('Дата последнего просмотра'),
+                                         null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('item_detail', args=[str(self.item_id)])
@@ -176,3 +180,20 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.order_item_id)
+
+
+@Field.register_lookup
+class NotEqual(models.Lookup):
+    lookup_name = 'ne'
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return '%s <> %s' % (lhs, rhs), params
+
+
+@IntegerField.register_lookup
+class AbsoluteIntValue(Transform):
+    lookup_name = 'abs'
+    function = 'ABS'

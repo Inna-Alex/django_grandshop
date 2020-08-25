@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from django.urls import reverse_lazy
 from django.views import generic
@@ -32,6 +32,12 @@ class ItemDetailView(generic.DetailView):
         context = super(ItemDetailView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
         return context
+
+    def get_object(self):
+        obj = super(ItemDetailView, self).get_object()
+        obj.last_accessed = datetime.now()
+        obj.save()
+        return obj
 
 
 class ItemCreateView(CreateView):
@@ -80,3 +86,31 @@ class ItemNewsListView(generic.ListView):
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
         return Item.objects.filter(created_date__gte=date_10_days)
+
+
+class ItemListNEView(generic.ListView):
+    model = Item
+    paginate_by = 10
+    template_name = 'catalog/item_ne_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemListNEView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
+        return context
+
+    def get_queryset(self):
+        return Item.objects.filter(quantity__ne=5)
+
+
+class ItemListABSView(generic.ListView):
+    model = Item
+    paginate_by = 10
+    template_name = 'catalog/item_abs_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemListABSView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
+        return context
+
+    def get_queryset(self):
+        return Item.objects.filter(quantity__abs=5)
