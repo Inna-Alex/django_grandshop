@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'^item/(?P<pk>[-\w]+)/delete/$', views.ItemDeleteView.as_view(),
         name='item_delete'),
     url(r'^items/news/$', views.ItemNewsListView.as_view(), name='item_news'),
+    url(r'^items/ne_lookup/$', views.ItemListNEView.as_view(), name='item_ne'),
+    url(r'^items/abs_lookup/$', views.ItemListABSView.as_view(), name='item_abs'),
 
     url(r'^orders/$', views.OrderListView.as_view(), name='orders'),
     url(r'^order/(?P<pk>[-\w]+)$', views.show_order_detail_view,
