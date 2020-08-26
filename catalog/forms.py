@@ -1,7 +1,8 @@
+from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Category, Order, OrderItem
+from .models import Category, Item, Order, OrderItem
 
 
 class OrderModelForm(ModelForm):
@@ -48,3 +49,21 @@ class CategoryRawModelForm(ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'summary', 'availability']
+
+
+class IssueForm(forms.Form):
+    item_choices = []
+    items = Item.objects.all()
+    if items:
+        for item in items:
+            item_choices.append((item.item_id, item.name))
+
+    select_item = forms.ChoiceField(
+        widget=forms.Select,
+        choices=item_choices,
+        label='Продукт',
+        required=True,
+    )
+    select_item.widget.attrs.update({'class': 'm-left-15'})
+
+

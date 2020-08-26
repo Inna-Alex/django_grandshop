@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1 class="inline-b m-top-20">Вы можете оставить заявку</h1>
+<p>Если товара нет в наличии, вы можете оставить заявку</p>
+<p>Выберите товар и нажмите Отправить</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <table class="m-top-20">
+		{{ form.as_table }}
+    </table>
+    <input class="btn-add m-top-20" type="submit" value="Отправить" />
+</form>
+{% endblock %}

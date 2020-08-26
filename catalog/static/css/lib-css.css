@@ -102,7 +102,11 @@ body {
 }
 
 .m-left-30 {
-	margin-left:30px;
+	margin-left: 30px;
+}
+
+.m-left-15 {
+	margin-left: 15px;
 }
 
 .btn-add {
