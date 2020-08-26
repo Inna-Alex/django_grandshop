@@ -1,10 +1,14 @@
 from datetime import date, datetime, timedelta
 
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.base import RedirectView
+from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
-from .models import Item
+from .forms import IssueForm
+from .models import Item, ItemIssue
 
 active_tab = '\'items\''
 
@@ -114,3 +118,32 @@ class ItemListABSView(generic.ListView):
 
     def get_queryset(self):
         return Item.objects.filter(quantity__abs=5)
+
+
+class ItemCounterRedirectView(RedirectView):
+    permanent = False
+    query_string = True
+    pattern_name = 'item_detail'
+
+    def get_redirect_url(self, *args, **kwargs):
+        item = get_object_or_404(Item, pk=kwargs['pk'])
+        item.update_counter_view()
+        return super(ItemCounterRedirectView, self).get_redirect_url(*args, **kwargs)
+
+
+class ItemIssueView(FormView):
+    form_class = IssueForm
+    success_url = reverse_lazy('items')
+    template_name = 'catalog/item_issue.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemIssueView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
+        return context
+
+    def form_valid(self, form):
+        selected_item_id = form.cleaned_data['select_item']
+        selected_item = Item.objects.get(item_id=selected_item_id)
+        user = self.request.user
+        ItemIssue.objects.create(item=selected_item, created_by=user)
+        return super().form_valid(form)

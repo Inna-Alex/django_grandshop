@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.urls import path
+from django.views.generic.base import RedirectView
 
 from . import views
 
@@ -15,6 +16,7 @@ urlpatterns = [
         name='manufactor_update'),
     url(r'^manufactor/(?P<pk>\d+)/delete/$', views.ManufactorDeleteView.as_view(),
         name='manufactor_delete'),
+    url(r'^manufactor/go-to-google/$', RedirectView.as_view(url='https://google.ru'), name='go-to-google'),
 
     url(r'^categories/$', views.CategoryListView.as_view(), name='categories'),
     url(r'^category/(?P<pk>\d+)$', views.CategoryDetailView.as_view(),
@@ -29,6 +31,8 @@ urlpatterns = [
     url(r'^items/$', views.ItemListView.as_view(), name='items'),
     url(r'^item/(?P<pk>[-\w]+)$', views.ItemDetailView.as_view(),
         name='item_detail'),
+    url(r'^item/counter/(?P<pk>[-\w]+)$', views.ItemCounterRedirectView.as_view(),
+        name='item_counter'),
     url(r'^item/create/$', views.ItemCreateView.as_view(), name='item_create'),
     url(r'^item/(?P<pk>[-\w]+)/update/$', views.ItemUpdateView.as_view(),
         name='item_update'),
@@ -37,6 +41,7 @@ urlpatterns = [
     url(r'^items/news/$', views.ItemNewsListView.as_view(), name='item_news'),
     url(r'^items/ne_lookup/$', views.ItemListNEView.as_view(), name='item_ne'),
     url(r'^items/abs_lookup/$', views.ItemListABSView.as_view(), name='item_abs'),
+    url(r'^items/send_issue/$', views.ItemIssueView.as_view(), name='item_issue'),
 
     url(r'^orders/$', views.OrderListView.as_view(), name='orders'),
     url(r'^order/(?P<pk>[-\w]+)$', views.show_order_detail_view,

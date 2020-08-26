@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 import uuid
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Transform
 from django.db.models.fields import Field, IntegerField
@@ -103,9 +104,20 @@ class Item(models.Model):
                                         help_text="Дата создания продукта")
     last_accessed = models.DateTimeField(verbose_name=_('Дата последнего просмотра'),
                                          null=True, blank=True)
+    counter_view = models.BigIntegerField(default=0, verbose_name=_('Количество просмотров'))
+    counter_buy = models.BigIntegerField(default=0, verbose_name=_('Количество покупок'))
 
     def get_absolute_url(self):
-        return reverse('item_detail', args=[str(self.item_id)])
+        # return reverse('item_detail', args=[str(self.item_id)])
+        return reverse('item_counter', args=[str(self.item_id)])
+
+    def update_counter_view(self):
+        self.counter_view += 1
+        self.save()
+
+    def update_counter_buy(self):
+        self.counter_buy += 1
+        self.save()
 
     def __str__(self):
         return self.name
@@ -180,6 +192,22 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.order_item_id)
+
+
+class ItemIssue(models.Model):
+    """
+    Model representing an item issue from user
+    """
+    item_issue_id = models.AutoField(primary_key=True)
+    item = models.ForeignKey('Item', verbose_name=_('Продукт'),
+                             on_delete=models.SET_NULL,
+                             null=True, blank=True)
+    created_by = models.ForeignKey(User, verbose_name=_('Пользователь'),
+                                   on_delete=models.SET_NULL,
+                                   null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата создания заявки")
 
 
 @Field.register_lookup
