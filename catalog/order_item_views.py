@@ -29,14 +29,8 @@ class OrderItemDetailView(generic.DetailView):
 def orderitem_create_view(request, order_id):
     # Если данный запрос типа POST, тогда
     if request.method == 'POST':
-
-        # Создаем экземпляр формы и заполняем данными из запроса
-        # (связывание, binding):
         form = OrderItemCreateModelForm(request.POST)
-
-        # Проверка валидности данных формы:
         if form.is_valid():
-            # Обработка данных из form.cleaned_data
             order_inst = Order.objects.get(order_id=order_id)
             orderitem = OrderItem.objects.create(
                 price=form.cleaned_data['price'],
@@ -60,29 +54,30 @@ def orderitem_create_view(request, order_id):
 
 
 def orderitem_update_view(request, pk):
-    order_id = request.POST.get('order_id', None)
-    quantity = request.POST.get('quantity', None)
-    price = request.POST.get('price', None)
-    order_item = OrderItem.objects.get(order_item_id=pk)
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id', None)
+        quantity = request.POST.get('quantity', None)
+        price = request.POST.get('price', None)
+        order_item = OrderItem.objects.get(order_item_id=pk)
 
-    form = OrderItemUpdateModelForm(initial={
-        'order': order_id,
-        'pk': pk,
-        'orderitem': order_item.orderitem.item_id,
-        'quantity': quantity,
-        'price': price})
+        form = OrderItemUpdateModelForm(initial={
+            'order': order_id,
+            'pk': pk,
+            'orderitem': order_item.orderitem.item_id,
+            'quantity': quantity,
+            'price': price})
 
-    return render(
-        request,
-        'catalog/orderitem_update.html',
-        context={'form': form,
-                 'order_id': order_id,
-                 'order_item_id': pk,
-                 'orderitem': order_item.orderitem.item_id,
-                 'quantity': quantity,
-                 'price': price,
-                 'active_tab': active_tab}
-    )
+        return render(
+            request,
+            'catalog/orderitem_update.html',
+            context={'form': form,
+                     'order_id': order_id,
+                     'order_item_id': pk,
+                     'orderitem': order_item.orderitem,
+                     'quantity': quantity,
+                     'price': price,
+                     'active_tab': active_tab}
+        )
 
 
 def orderitem_update_save_view(request, pk):
@@ -96,6 +91,16 @@ def orderitem_update_save_view(request, pk):
             return HttpResponseRedirect(reverse(
                 'order_detail',
                 kwargs={'pk': orderitem.order_id}))
+        else:
+            order_item = OrderItem.objects.get(order_item_id=pk)
+            return render(
+                request,
+                'catalog/orderitem_update.html',
+                context={'form': form,
+                         'order_item_id': pk,
+                         'orderitem': order_item.orderitem,
+                         'active_tab': active_tab}
+            )
 
 
 def calculate_price(request, orderitem=None):
@@ -117,8 +122,8 @@ class OrderItemDeleteView(DeleteView):
 
 
 def show_order_detail_view(request, pk):
-    order = Order.objects.get(order_id=pk)
-    order_items = OrderItem.objects.filter(order_id__exact=pk)
+    order_items = OrderItem.objects.filter(order_id=pk).select_related('order')
+    order = order_items.first().order
     form = OrderDetailModelForm()
     since_time = "{} назад".format(timesince(order.created_date, time_strings=ru_time_strings))
 
@@ -145,8 +150,8 @@ def remove_order_detail_items_view(request):
         order_item.delete()
 
         form = OrderDetailModelForm()
-        order = Order.objects.get(order_id=order_id)
-        order_items = OrderItem.objects.filter(order_id__exact=order_id)
+        order_items = OrderItem.objects.filter(order_id=order_id).select_related('order')
+        order = order_items.first().order
         return render(request, 'catalog/order_detail.html', {
             'form': form,
             'order': order,

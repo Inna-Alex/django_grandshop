@@ -1,10 +1,40 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<form action="{% url 'orderitem_update_save' pk=order_item_id %}" method="post" data-get-order-item-price-url="{% url 'calculate_price' orderitem=orderitem %}">
+<form action="{% url 'orderitem_update_save' pk=order_item_id %}" method="post" data-get-order-item-price-url="{% url 'calculate_price' orderitem=orderitem.item_id %}">
         {% csrf_token %}
+        {{ form.non_field_errors }}
         <table>
-        {{ form }}
+            <tr>
+                <td>{{ form.orderitem.label_tag }}</td>
+                <td>
+                    {{ form.orderitem.errors }}
+                    <select name="orderitem" id="id_orderitem" disabled="disabled">
+                        <option value="{{ orderitem.item_id }}" selected="">{{orderitem.name}}</option>
+                    </select>
+                    {% if form.orderitem.help_text %}
+                    <p class="help">{{ form.orderitem.help_text|safe }}</p>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.quantity.label_tag }}</td>
+                <td>
+                    {{ form.quantity.errors }}{{ form.quantity }}
+                    {% if form.quantity.help_text %}
+                    <p class="help">{{ form.quantity.help_text|safe }}</p>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.price.label_tag }}</td>
+                <td>
+                    {{ form.price.errors }}{{ form.price }}
+                    {% if form.price.help_text %}
+                    <p class="help">{{ form.price.help_text|safe }}</p>
+                    {% endif %}
+                </td>
+            </tr>
         </table>
         <input type="submit" value="Сохранить" />
     </form>

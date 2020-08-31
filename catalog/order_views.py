@@ -50,11 +50,10 @@ class OrderUpdateView(UpdateView):
 def order_confirm_delete_form(request, pk):
     order = Order.objects.get(order_id=pk)
     if request.method == 'POST':
-        form = OrderModelForm(request.POST)
         order_inst = Order.objects.get(order_id=pk)
         try:
             order_inst_items = OrderItem.objects.filter(
-                order_id__exact=order_inst.order_id)
+                order_id=pk)
             order_inst_items_count = len(order_inst_items)
         except ObjectDoesNotExist:
             order_inst_items_count = 0
