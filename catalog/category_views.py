@@ -68,7 +68,7 @@ def category_raw_sql_get_one(category_id):
         sql_update = '''update catalog_category
                         #set availability = 0
                         #where category_id = %s'''
-        #cursor.execute(sql_update, [category_id])
+        # cursor.execute(sql_update, [category_id])
         sql_select = '''select category_id, name, summary,
                         availability, created_date
                         from catalog_category
@@ -168,4 +168,4 @@ def category_raw_by_func(request):
             'form': form,
             'category_objs': category_objs_raw,
             'active_tab': active_tab})
-    
+

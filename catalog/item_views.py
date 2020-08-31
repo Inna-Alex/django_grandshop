@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
@@ -53,6 +54,15 @@ class ItemCreateView(CreateView):
         context = super(ItemCreateView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
         return context
+
+    def form_valid(self, form):
+        manufactor = form.cleaned_data['manufactor']
+        category = form.cleaned_data['category']
+        if manufactor is None:
+            raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
+        if category is None:
+            raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
+        return super().form_valid(form)
 
 
 class ItemUpdateView(UpdateView):
@@ -144,6 +154,5 @@ class ItemIssueView(FormView):
     def form_valid(self, form):
         selected_item_id = form.cleaned_data['select_item']
         selected_item = Item.objects.get(item_id=selected_item_id)
-        user = self.request.user
-        ItemIssue.objects.create(item=selected_item, created_by=user)
+        ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
         return super().form_valid(form)
