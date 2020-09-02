@@ -1,8 +1,10 @@
 from datetime import date, datetime, timedelta
 
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.base import RedirectView
@@ -141,6 +143,7 @@ class ItemCounterRedirectView(RedirectView):
         return super(ItemCounterRedirectView, self).get_redirect_url(*args, **kwargs)
 
 
+@method_decorator(login_required, name='dispatch')
 class ItemIssueView(FormView):
     form_class = IssueForm
     success_url = reverse_lazy('items')
