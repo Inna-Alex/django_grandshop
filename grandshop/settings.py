@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'register.apps.RegisterConfig',
     'crispy_forms',
     'rest_framework',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -110,8 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_L10N = True
@@ -131,3 +130,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'users.CustomUser'

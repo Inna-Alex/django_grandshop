@@ -150,7 +150,7 @@ def python_func_get_category_id():
     with connection.cursor() as cursor:
         cursor.execute(sql_select)
         result = cursor.fetchone()
-    
+
     return result[0]
 
 

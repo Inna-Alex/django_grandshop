@@ -123,7 +123,10 @@ class OrderItemDeleteView(DeleteView):
 
 def show_order_detail_view(request, pk):
     order_items = OrderItem.objects.filter(order_id=pk).select_related('order')
-    order = order_items.first().order
+    if order_items:
+        order = order_items.first().order
+    else:
+        order = Order.objects.get(order_id=pk)
     form = OrderDetailModelForm()
     since_time = "{} назад".format(timesince(order.created_date, time_strings=ru_time_strings))
 
@@ -146,12 +149,12 @@ def remove_order_detail_items_view(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
         order_id = request.POST.get('order_id')
-        order_item = OrderItem.objects.get(order_item_id=order_item_id)
+        order_item = OrderItem.objects.select_related('order').get(order_item_id=order_item_id)
+        order = order_item.order
         order_item.delete()
 
         form = OrderDetailModelForm()
-        order_items = OrderItem.objects.filter(order_id=order_id).select_related('order')
-        order = order_items.first().order
+        order_items = OrderItem.objects.filter(order_id=order_id)
         return render(request, 'catalog/order_detail.html', {
             'form': form,
             'order': order,

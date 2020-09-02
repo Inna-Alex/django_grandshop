@@ -11,6 +11,8 @@ from django.utils.translation import ngettext_lazy, ugettext_lazy as _
 
 from django_currentuser.db.models import CurrentUserField
 
+from users.models import CustomUser
+
 ru_time_strings = {
     'year': ngettext_lazy('%d год', '%d лет'),
     'month': ngettext_lazy('%d месяц', '%d месяцев'),
@@ -217,7 +219,7 @@ class ItemIssue(models.Model):
     item = models.ForeignKey('Item', verbose_name=_('Продукт'),
                              on_delete=models.SET_NULL,
                              null=True, blank=True)
-    created_by = models.ForeignKey(User, verbose_name=_('Пользователь'),
+    created_by = models.ForeignKey(CustomUser, verbose_name=_('Пользователь'),
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True,
