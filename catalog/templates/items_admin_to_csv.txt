@@ -1,0 +1,2 @@
+{% load catalog_tags %}{% for row in data %}{% autoescape off %}"{{ row.0|addslashes }}", "{{ row.1|addslashes }}", "{{ row.2|addslashes }}", "{{ row.3|addslashes }}", "{{ row.4|addslashes }}", "{{ row.5|addslashes }}", "{{ row.6|addslashes|csv_bool_str }}", "{{ row.7|addslashes }}", "{{ row.8|addslashes|csv_date_str }}", "{{ row.9|addslashes|csv_date_str }}", "{{ row.10|addslashes }}", "{{ row.11|addslashes }}"
+{% endautoescape %}{% endfor %}

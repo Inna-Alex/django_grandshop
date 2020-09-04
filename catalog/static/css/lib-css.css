@@ -281,3 +281,19 @@ body {
     font-size: 0.9rem;
     font-weight: bold;
 }
+
+.btn-csv {
+	color: rgba(0,0,0,.3);
+	display: inline-block;
+	font-size: 1rem;
+	font-weight: bold;
+	padding: .75rem 1.25rem;
+	text-align: center;
+	text-decoration: none;
+	text-shadow: 1px 1px rgba(0,0,0,.3);
+	transition: .2s;
+}
+.btn-csv:hover {
+	color: rgba(0,0,0,.6);
+	text-decoration: none;
+}
