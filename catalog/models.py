@@ -95,7 +95,8 @@ class Item(models.Model):
     Model representing an item
     """
     item_id = models.UUIDField(primary_key=True,
-                               default=uuid.uuid4)
+                               default=uuid.uuid4,
+                               verbose_name=_('Идентификатор'))
     manufactor = models.ForeignKey('Manufactor',
                                    verbose_name=_('Производитель'),
                                    on_delete=models.SET_NULL,

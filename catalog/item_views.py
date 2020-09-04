@@ -1,9 +1,14 @@
 from datetime import date, datetime, timedelta
+import csv
+from csv_export.views import CSVExportView
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
+from django.template import loader
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
@@ -159,3 +164,68 @@ class ItemIssueView(FormView):
         selected_item = Item.objects.get(item_id=selected_item_id)
         ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
         return super().form_valid(form)
+
+
+class ItemExportView(CSVExportView):
+    model = Item
+    specify_separator = False
+
+    def get_fields(self, queryset):
+        fields = ['name', 'summary', 'price', 'quantity', 'availability', 'manufactor', 'category']
+        if self.request.user.is_superuser:
+            admin_fields = ['created_date', 'last_accessed', 'counter_view', 'counter_buy', 'item_id']
+            fields += admin_fields
+        return fields
+
+    def get_filename(self, queryset):
+        return 'Items-export-{!s}.csv'.format(timezone.now())
+
+
+class Echo:
+    def write(self, value):
+        return value
+
+
+def items_large_to_csv_view(request):
+    """
+    Items to csv if it's too many
+    """
+    rows = get_items_to_csv(Item.objects.all(), request.user.is_superuser)
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="Items-export.csv"'
+    return response
+
+
+def items_to_csv_by_template_view(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Items-export.csv"'
+    is_admin = request.user.is_superuser
+
+    csv_data = get_items_to_csv(Item.objects.all(), is_admin)
+    csv_template = 'items_admin_to_csv.txt' if is_admin else 'items_to_csv.txt'
+
+    t = loader.get_template(csv_template)
+    c = {'data': csv_data}
+    response.write(t.render(c))
+    return response
+
+
+def get_items_to_csv(queryset, is_admin):
+    admin_fields = ['created_date', 'last_accessed', 'counter_view', 'counter_buy', 'item_id']
+    exclude_fields = admin_fields if not is_admin else []
+    opts = queryset.model._meta
+    model_fields = [(field.verbose_name, field.name) for field in opts.fields]
+    field_verbose_names, field_names = [], []
+    for field in model_fields:
+        field_v_name, field_name = field
+        if field_name not in exclude_fields:
+            field_verbose_names.append(field_v_name)
+            field_names.append(field_name)
+
+    result = [[getattr(obj, field) for field in field_names] for obj in queryset]
+    result.insert(0, field_verbose_names)
+
+    return result

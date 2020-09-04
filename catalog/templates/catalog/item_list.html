@@ -4,6 +4,7 @@
     <h1 class="inline-b m-top-20">Список продуктов</h1>
     <a href="{% url 'item_create' %}" class="btn-add right m-top-20">Добавить продукт</a>
     <a href="{% url 'item_news' %}" class="btn-new right m-top-20 m-right-20">Новинки <span class="ex-new">!</span></a>
+    <a href="{% url 'items_to_csv' %}" class="btn-csv right m-top-20"><i class="fa fa-download" aria-hidden="true"></i> CSV</a>
 
     {% if item_list %}
     <ul class="non-list">
