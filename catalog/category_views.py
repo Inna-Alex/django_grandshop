@@ -1,4 +1,5 @@
 from collections import namedtuple
+import logging
 import sqlite3
 
 from django.db import connection
@@ -9,8 +10,14 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import CategoryRawModelForm
 from .models import Category
+from catalog.loggers.query_logger import QueryLogger
+from catalog.loggers.query_logger_config import init_log
+from catalog.utils import consts
 
 active_tab = '\'categories\''
+log_name = consts.logs['category']
+init_log(log_name)
+logger = logging.getLogger(log_name)
 
 
 class CategoryListView(generic.ListView):
@@ -18,8 +25,12 @@ class CategoryListView(generic.ListView):
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        context = super(CategoryListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(CategoryListView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
 
@@ -32,6 +43,14 @@ class CategoryDetailView(generic.DetailView):
         context['active_tab'] = active_tab
         return context
 
+    def get_object(self, queryset=None):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            obj = super(CategoryDetailView, self).get_object()
+        logger.info(str(ql))
+
+        return obj
+
 
 class CategoryCreateView(CreateView):
     model = Category
@@ -41,6 +60,14 @@ class CategoryCreateView(CreateView):
         context = super(CategoryCreateView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
         return context
+
+    def form_valid(self, form):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(CategoryCreateView, self).form_valid(form)
+        logger.info(str(ql))
+
+        return response
 
 
 class CategoryUpdateView(UpdateView):
@@ -52,6 +79,14 @@ class CategoryUpdateView(UpdateView):
         context['active_tab'] = active_tab
         return context
 
+    def form_valid(self, form):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(CategoryUpdateView, self).form_valid(form)
+        logger.info(str(ql))
+
+        return response
+
 
 class CategoryDeleteView(DeleteView):
     model = Category
@@ -62,19 +97,27 @@ class CategoryDeleteView(DeleteView):
         context['active_tab'] = active_tab
         return context
 
+    def delete(self, request, *args, **kwargs):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(CategoryDeleteView, self).delete(request, *args, **kwargs)
+        logger.info(str(ql))
+
+        return response
+
 
 def category_raw_sql_get_one(category_id):
-    with connection.cursor() as cursor:
-        sql_update = '''update catalog_category
-                        #set availability = 0
-                        #where category_id = %s'''
-        # cursor.execute(sql_update, [category_id])
-        sql_select = '''select category_id, name, summary,
-                        availability, created_date
-                        from catalog_category
-                        where category_id = %s'''
-        cursor.execute(sql_select, [category_id])
-        result = namedtuple_fetch_one(cursor)
+    ql = QueryLogger()
+    with connection.execute_wrapper(ql):
+        with connection.cursor() as cursor:
+            sql_select = '''select category_id, name, summary,
+                            availability, created_date
+                            from catalog_category
+                            where category_id = %s'''
+            cursor.execute(sql_select, [category_id])
+            result = namedtuple_fetch_one(cursor)
+    logger.info(str(ql))
+
     return result
 
 
@@ -82,9 +125,13 @@ def category_raw_sql_get_all():
     sql_select = '''select category_id, name, summary,
                     availability, created_date
                     from catalog_category'''
-    with connection.cursor() as cursor:
-        cursor.execute(sql_select)
-        result = namedtuple_fetch_all(cursor)
+    ql = QueryLogger()
+    with connection.execute_wrapper(ql):
+        with connection.cursor() as cursor:
+            cursor.execute(sql_select)
+            result = namedtuple_fetch_all(cursor)
+    logger.info(str(ql))
+
     return result
 
 
@@ -140,9 +187,9 @@ def category_raw_all(request):
 
 
 def python_func_get_category_id():
-    '''
+    """
     Function get category_id with maximum numbers of items
-    '''
+    """
     sql_select = '''select category_id, max(num) as max_num
                     from (select category_id, count(*) as num
                     from catalog_item
@@ -159,9 +206,12 @@ def category_raw_by_func(request):
     con.create_function('db_func_get_category_id', 0,
                         python_func_get_category_id)
     cur = con.cursor()
-    cur.execute('select db_func_get_category_id()')
-    category_id = cur.fetchone()[0]
-    category_objs_raw = category_raw_sql_get_one(category_id)
+    ql = QueryLogger()
+    with connection.execute_wrapper(ql):
+        cur.execute('select db_func_get_category_id()')
+        category_id = cur.fetchone()[0]
+        category_objs_raw = category_raw_sql_get_one(category_id)
+    logger.info(str(ql))
     form = CategoryRawModelForm()
 
     return render(request, 'catalog/category_raw_by_func.html', {
