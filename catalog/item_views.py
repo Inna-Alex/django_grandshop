@@ -1,7 +1,9 @@
 from datetime import date, datetime, timedelta
 import csv
 from csv_export.views import CSVExportView
+import logging
 
+from django.db import connection
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, StreamingHttpResponse
@@ -15,10 +17,17 @@ from django.views import generic
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
+
 from .forms import IssueForm
 from .models import Item, ItemIssue
+from catalog.loggers.query_logger import QueryLogger
+from catalog.loggers.query_logger_config import init_log
+from catalog.utils import consts
 
 active_tab = '\'items\''
+log_name = consts.logs['item']
+init_log(log_name)
+logger = logging.getLogger(log_name)
 
 
 class ItemListView(generic.ListView):
@@ -26,14 +35,19 @@ class ItemListView(generic.ListView):
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        context = super(ItemListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(ItemListView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
-        return Item.objects.extra(select={'is_recent': 'created_date > %s'},
+        queryset = Item.objects.extra(select={'is_recent': 'created_date > %s'},
                                   select_params=(date_10_days,))
+        return queryset
 
 
 # CRUD start
@@ -46,9 +60,13 @@ class ItemDetailView(generic.DetailView):
         return context
 
     def get_object(self):
-        obj = super(ItemDetailView, self).get_object()
-        obj.last_accessed = datetime.now()
-        obj.save()
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            obj = super(ItemDetailView, self).get_object()
+            obj.last_accessed = datetime.now()
+            obj.save()
+        logger.info(str(ql))
+
         return obj
 
 
@@ -69,7 +87,13 @@ class ItemCreateView(CreateView):
             raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
         if category is None:
             raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
-        return super().form_valid(form)
+
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(ItemCreateView, self).form_valid(form)
+        logger.info(str(ql))
+
+        return response
 
 
 class ItemUpdateView(UpdateView):
@@ -82,6 +106,14 @@ class ItemUpdateView(UpdateView):
         context['active_tab'] = active_tab
         return context
 
+    def form_valid(self, form):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(ItemUpdateView, self).form_valid(form)
+        logger.info(str(ql))
+
+        return response
+
 
 class ItemDeleteView(DeleteView):
     model = Item
@@ -91,6 +123,14 @@ class ItemDeleteView(DeleteView):
         context = super(ItemDeleteView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
         return context
+
+    def delete(self, request, *args, **kwargs):
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            response = super(ItemDeleteView, self).delete(request, *args, **kwargs)
+        logger.info(str(ql))
+
+        return response
 # CRUD end
 
 
@@ -100,8 +140,12 @@ class ItemNewsListView(generic.ListView):
     template_name = 'catalog/item_news_list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ItemNewsListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(ItemNewsListView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
     def get_queryset(self):
@@ -115,8 +159,12 @@ class ItemListNEView(generic.ListView):
     template_name = 'catalog/item_ne_list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ItemListNEView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(ItemListNEView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
     def get_queryset(self):
@@ -129,8 +177,12 @@ class ItemListABSView(generic.ListView):
     template_name = 'catalog/item_abs_list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ItemListABSView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(ItemListABSView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
     def get_queryset(self):
@@ -157,13 +209,18 @@ class ItemIssueView(FormView):
     def get_context_data(self, **kwargs):
         context = super(ItemIssueView, self).get_context_data(**kwargs)
         context['active_tab'] = active_tab
+
         return context
 
     def form_valid(self, form):
         selected_item_id = form.cleaned_data['select_item']
-        selected_item = Item.objects.get(item_id=selected_item_id)
-        ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
-        return super().form_valid(form)
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            selected_item = Item.objects.get(item_id=selected_item_id)
+            ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
+        logger.info(str(ql))
+
+        return super(ItemIssueView, self).form_valid(form)
 
 
 class ItemExportView(CSVExportView):

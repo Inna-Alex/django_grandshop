@@ -1,3 +1,6 @@
+import logging
+
+from django.db import connection
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template.defaultfilters import timesince
@@ -5,11 +8,17 @@ from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.views.generic.edit import DeleteView
 
+from catalog.loggers.query_logger import QueryLogger
+from catalog.loggers.query_logger_config import init_log
+from catalog.utils import consts
 from .forms import OrderDetailModelForm
 from .forms import OrderItemCreateModelForm, OrderItemUpdateModelForm
 from .models import Item, Order, OrderItem, ru_time_strings
 
 active_tab = '\'orders\''
+log_name = consts.logs['order_item']
+init_log(log_name)
+logger = logging.getLogger(log_name)
 
 
 class OrderItemListView(generic.ListView):
@@ -17,8 +26,12 @@ class OrderItemListView(generic.ListView):
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        context = super(OrderItemListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            context = super(OrderItemListView, self).get_context_data(**kwargs)
+            context['active_tab'] = active_tab
+        logger.info(str(ql))
+
         return context
 
 
@@ -31,13 +44,16 @@ def orderitem_create_view(request, order_id):
     if request.method == 'POST':
         form = OrderItemCreateModelForm(request.POST)
         if form.is_valid():
-            order_inst = Order.objects.get(order_id=order_id)
-            orderitem = OrderItem.objects.create(
-                price=form.cleaned_data['price'],
-                quantity=form.cleaned_data['quantity'],
-                order=order_inst,
-                orderitem=form.cleaned_data['orderitem'])
-            orderitem.save()
+            ql = QueryLogger()
+            with connection.execute_wrapper(ql):
+                order_inst = Order.objects.get(order_id=order_id)
+                orderitem = OrderItem.objects.create(
+                    price=form.cleaned_data['price'],
+                    quantity=form.cleaned_data['quantity'],
+                    order=order_inst,
+                    orderitem=form.cleaned_data['orderitem'])
+                orderitem.save()
+            logger.info(str(ql))
             return HttpResponseRedirect(reverse('order_detail',
                                                 kwargs={'pk': order_id}))
 
@@ -58,7 +74,10 @@ def orderitem_update_view(request, pk):
         order_id = request.POST.get('order_id', None)
         quantity = request.POST.get('quantity', None)
         price = request.POST.get('price', None)
-        order_item = OrderItem.objects.get(order_item_id=pk)
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            order_item = OrderItem.objects.get(order_item_id=pk)
+        logger.info(str(ql))
 
         form = OrderItemUpdateModelForm(initial={
             'order': order_id,
@@ -84,15 +103,23 @@ def orderitem_update_save_view(request, pk):
     if request.method == 'POST':
         form = OrderItemUpdateModelForm(request.POST)
         if form.is_valid():
-            orderitem = OrderItem.objects.get(order_item_id=pk)
-            orderitem.quantity = form.cleaned_data['quantity']
-            orderitem.price = form.cleaned_data['price']
-            orderitem.save()
+            ql = QueryLogger()
+            with connection.execute_wrapper(ql):
+                orderitem = OrderItem.objects.get(order_item_id=pk)
+                orderitem.quantity = form.cleaned_data['quantity']
+                orderitem.price = form.cleaned_data['price']
+                orderitem.save()
+            logger.info(str(ql))
+
             return HttpResponseRedirect(reverse(
                 'order_detail',
                 kwargs={'pk': orderitem.order_id}))
         else:
-            order_item = OrderItem.objects.get(order_item_id=pk)
+            ql = QueryLogger()
+            with connection.execute_wrapper(ql):
+                order_item = OrderItem.objects.get(order_item_id=pk)
+            logger.info(str(ql))
+
             return render(
                 request,
                 'catalog/orderitem_update.html',
@@ -108,7 +135,11 @@ def calculate_price(request, orderitem=None):
     if orderitem is None:
         orderitem = request.GET.get('orderitem', None)
 
-    item = Item.objects.get(item_id=orderitem)
+    ql = QueryLogger()
+    with connection.execute_wrapper(ql):
+        item = Item.objects.get(item_id=orderitem)
+    logger.info(str(ql))
+
     to_pay = item.price * int(quantity)
     data = {
         'to_pay': to_pay
@@ -122,11 +153,14 @@ class OrderItemDeleteView(DeleteView):
 
 
 def show_order_detail_view(request, pk):
+    ql = QueryLogger()
     order_items = OrderItem.objects.filter(order_id=pk).select_related('order')
-    if order_items:
-        order = order_items.first().order
-    else:
-        order = Order.objects.get(order_id=pk)
+    with connection.execute_wrapper(ql):
+        if order_items:
+            order = order_items.first().order
+        else:
+            order = Order.objects.get(order_id=pk)
+    logger.info(str(ql))
     form = OrderDetailModelForm()
     since_time = "{} назад".format(timesince(order.created_date, time_strings=ru_time_strings))
 
@@ -149,9 +183,12 @@ def remove_order_detail_items_view(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
         order_id = request.POST.get('order_id')
-        order_item = OrderItem.objects.select_related('order').get(order_item_id=order_item_id)
-        order = order_item.order
-        order_item.delete()
+        ql = QueryLogger()
+        with connection.execute_wrapper(ql):
+            order_item = OrderItem.objects.select_related('order').get(order_item_id=order_item_id)
+            order = order_item.order
+            order_item.delete()
+        logger.info(str(ql))
 
         form = OrderDetailModelForm()
         order_items = OrderItem.objects.filter(order_id=order_id)
