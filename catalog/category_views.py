@@ -1,5 +1,4 @@
 from collections import namedtuple
-import logging
 import sqlite3
 
 from django.db import connection
@@ -10,27 +9,23 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import CategoryRawModelForm
 from .models import Category
-from catalog.loggers.query_logger import QueryLogger
 from catalog.loggers.query_logger_config import init_log
 from catalog.utils import consts
+from catalog.utils.main import query_log
 
 active_tab = '\'categories\''
 log_name = consts.logs['category']
 init_log(log_name)
-logger = logging.getLogger(log_name)
 
 
 class CategoryListView(generic.ListView):
     model = Category
     paginate_by = 10
 
+    @query_log(log_name=log_name)
     def get_context_data(self, **kwargs):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            context = super(CategoryListView, self).get_context_data(**kwargs)
-            context['active_tab'] = active_tab
-        logger.info(str(ql))
-
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        context['active_tab'] = active_tab
         return context
 
 
@@ -43,13 +38,9 @@ class CategoryDetailView(generic.DetailView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def get_object(self, queryset=None):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            obj = super(CategoryDetailView, self).get_object()
-        logger.info(str(ql))
-
-        return obj
+        return super(CategoryDetailView, self).get_object()
 
 
 class CategoryCreateView(CreateView):
@@ -61,13 +52,9 @@ class CategoryCreateView(CreateView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def form_valid(self, form):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(CategoryCreateView, self).form_valid(form)
-        logger.info(str(ql))
-
-        return response
+        return super(CategoryCreateView, self).form_valid(form)
 
 
 class CategoryUpdateView(UpdateView):
@@ -79,13 +66,9 @@ class CategoryUpdateView(UpdateView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def form_valid(self, form):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(CategoryUpdateView, self).form_valid(form)
-        logger.info(str(ql))
-
-        return response
+        return super(CategoryUpdateView, self).form_valid(form)
 
 
 class CategoryDeleteView(DeleteView):
@@ -97,40 +80,32 @@ class CategoryDeleteView(DeleteView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def delete(self, request, *args, **kwargs):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(CategoryDeleteView, self).delete(request, *args, **kwargs)
-        logger.info(str(ql))
-
-        return response
+        return super(CategoryDeleteView, self).delete(request, *args, **kwargs)
 
 
+@query_log(log_name=log_name)
 def category_raw_sql_get_one(category_id):
-    ql = QueryLogger()
-    with connection.execute_wrapper(ql):
-        with connection.cursor() as cursor:
-            sql_select = '''select category_id, name, summary,
-                            availability, created_date
-                            from catalog_category
-                            where category_id = %s'''
-            cursor.execute(sql_select, [category_id])
-            result = namedtuple_fetch_one(cursor)
-    logger.info(str(ql))
+    with connection.cursor() as cursor:
+        sql_select = '''select category_id, name, summary,
+                        availability, created_date
+                        from catalog_category
+                        where category_id = %s'''
+        cursor.execute(sql_select, [category_id])
+        result = namedtuple_fetch_one(cursor)
 
     return result
 
 
+@query_log(log_name=log_name)
 def category_raw_sql_get_all():
     sql_select = '''select category_id, name, summary,
                     availability, created_date
                     from catalog_category'''
-    ql = QueryLogger()
-    with connection.execute_wrapper(ql):
-        with connection.cursor() as cursor:
-            cursor.execute(sql_select)
-            result = namedtuple_fetch_all(cursor)
-    logger.info(str(ql))
+    with connection.cursor() as cursor:
+        cursor.execute(sql_select)
+        result = namedtuple_fetch_all(cursor)
 
     return result
 
@@ -201,17 +176,15 @@ def python_func_get_category_id():
     return result[0]
 
 
+@query_log(log_name=log_name)
 def category_raw_by_func(request):
     con = sqlite3.connect(":memory:")
     con.create_function('db_func_get_category_id', 0,
                         python_func_get_category_id)
     cur = con.cursor()
-    ql = QueryLogger()
-    with connection.execute_wrapper(ql):
-        cur.execute('select db_func_get_category_id()')
-        category_id = cur.fetchone()[0]
-        category_objs_raw = category_raw_sql_get_one(category_id)
-    logger.info(str(ql))
+    cur.execute('select db_func_get_category_id()')
+    category_id = cur.fetchone()[0]
+    category_objs_raw = category_raw_sql_get_one(category_id)
     form = CategoryRawModelForm()
 
     return render(request, 'catalog/category_raw_by_func.html', {
