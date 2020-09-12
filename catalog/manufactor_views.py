@@ -1,33 +1,27 @@
-import logging
-
-from django.db import connection
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from catalog.loggers.query_logger import QueryLogger
+from .models import Manufactor
 from catalog.loggers.query_logger_config import init_log
 from catalog.utils import consts
-from .models import Manufactor
+from catalog.utils.main import query_log
 
 active_tab = '\'manufactors\''
 log_name = consts.logs['manufactor']
 init_log(log_name)
-logger = logging.getLogger(log_name)
 
 
 class ManufactorListView(generic.ListView):
     model = Manufactor
     paginate_by = 10
 
+    @query_log(log_name=log_name)
     def get_context_data(self, **kwargs):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            context = super(ManufactorListView, self).get_context_data(**kwargs)
-            context['great_manufactor_name'] = 'ASUS manufactor'
-            context['great_manufactor_summary'] = 'Summary for ASUS manufactor'
-            context['active_tab'] = active_tab
-        logger.info(str(ql))
+        context = super(ManufactorListView, self).get_context_data(**kwargs)
+        context['great_manufactor_name'] = 'ASUS manufactor'
+        context['great_manufactor_summary'] = 'Summary for ASUS manufactor'
+        context['active_tab'] = active_tab
 
         return context
 
@@ -41,13 +35,9 @@ class ManufactorDetailView(generic.DetailView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def get_object(self, queryset=None):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            obj = super(ManufactorDetailView, self).get_object()
-        logger.info(str(ql))
-
-        return obj
+        return super(ManufactorDetailView, self).get_object()
 
 
 class ManufactorCreateView(CreateView):
@@ -59,13 +49,9 @@ class ManufactorCreateView(CreateView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def form_valid(self, form):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(ManufactorCreateView, self).form_valid(form)
-        logger.info(str(ql))
-
-        return response
+        return super(ManufactorCreateView, self).form_valid(form)
 
 
 class ManufactorUpdateView(UpdateView):
@@ -77,13 +63,9 @@ class ManufactorUpdateView(UpdateView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def form_valid(self, form):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(ManufactorUpdateView, self).form_valid(form)
-        logger.info(str(ql))
-
-        return response
+        return super(ManufactorUpdateView, self).form_valid(form)
 
 
 class ManufactorDeleteView(DeleteView):
@@ -95,10 +77,6 @@ class ManufactorDeleteView(DeleteView):
         context['active_tab'] = active_tab
         return context
 
+    @query_log(log_name=log_name)
     def delete(self, request, *args, **kwargs):
-        ql = QueryLogger()
-        with connection.execute_wrapper(ql):
-            response = super(ManufactorDeleteView, self).delete(request, *args, **kwargs)
-        logger.info(str(ql))
-
-        return response
+        return super(ManufactorDeleteView, self).delete(request, *args, **kwargs)

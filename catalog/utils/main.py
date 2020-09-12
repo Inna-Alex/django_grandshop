@@ -1,4 +1,14 @@
 from datetime import datetime
+import logging
+
+from django.db import connection
+
+from catalog.loggers.query_logger import QueryLogger
+from catalog.loggers.query_logger_config import init_log
+from catalog.utils import consts
+
+main_log_name = consts.logs['main']
+init_log(main_log_name)
 
 
 def date_format_str(value, date_format=None):
@@ -10,3 +20,16 @@ def date_format_str(value, date_format=None):
         to_datetime.hour, to_datetime.minute, to_datetime.second)
 
     return to_str
+
+
+def query_log(log_name=main_log_name):
+    def on_call(func):
+        def wrapper(*args, **kwargs):
+            logger = logging.getLogger(log_name)
+            ql = QueryLogger()
+            with connection.execute_wrapper(ql):
+                result = func(*args, **kwargs)
+            logger.info(str(ql))
+            return result
+        return wrapper
+    return on_call
