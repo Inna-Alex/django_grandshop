@@ -227,6 +227,9 @@ class ItemIssue(models.Model):
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания заявки")
 
+    def __str__(self):
+        return str(self.item)
+
 
 @Field.register_lookup
 class NotEqual(models.Lookup):

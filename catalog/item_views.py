@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 import csv
-from csv_export.views import CSVExportView
+# from csv_export.views import CSVExportView
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -190,19 +190,19 @@ class ItemIssueView(FormView):
         return super(ItemIssueView, self).form_valid(form)
 
 
-class ItemExportView(CSVExportView):
-    model = Item
-    specify_separator = False
-
-    def get_fields(self, queryset):
-        fields = ['name', 'summary', 'price', 'quantity', 'availability', 'manufactor', 'category']
-        if self.request.user.is_superuser:
-            admin_fields = ['created_date', 'last_accessed', 'counter_view', 'counter_buy', 'item_id']
-            fields += admin_fields
-        return fields
-
-    def get_filename(self, queryset):
-        return 'Items-export-{!s}.csv'.format(timezone.now())
+# class ItemExportView(CSVExportView):
+#     model = Item
+#     specify_separator = False
+#
+#     def get_fields(self, queryset):
+#         fields = ['name', 'summary', 'price', 'quantity', 'availability', 'manufactor', 'category']
+#         if self.request.user.is_superuser:
+#             admin_fields = ['created_date', 'last_accessed', 'counter_view', 'counter_buy', 'item_id']
+#             fields += admin_fields
+#         return fields
+#
+#     def get_filename(self, queryset):
+#         return 'Items-export-{!s}.csv'.format(timezone.now())
 
 
 class Echo:
