@@ -4,19 +4,20 @@ import csv
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
 from .forms import IssueForm
-from .models import Item, ItemIssue
+from .models import Category, Item, ItemIssue, Manufactor
 from catalog.loggers.query_logger_config import init_log
 from catalog.utils import consts
 from catalog.utils.main import query_log
@@ -74,9 +75,25 @@ class ItemCreateView(CreateView):
     def form_valid(self, form):
         manufactor = form.cleaned_data['manufactor']
         category = form.cleaned_data['category']
-        if manufactor is None:
+        manufactor_error = category_error = False
+        if manufactor and hasattr(manufactor, 'pk'):
+            try:
+                Manufactor.objects.get(manufactor_id=manufactor.pk)
+            except ObjectDoesNotExist:
+                manufactor_error = True
+        else:
+            manufactor_error = True
+        if category and hasattr(category, 'pk'):
+            try:
+                Category.objects.get(category_id=category.pk)
+            except ObjectDoesNotExist:
+                category_error = True
+        else:
+            category_error = True
+
+        if manufactor_error:
             raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
-        if category is None:
+        if category_error:
             raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
 
         return super(ItemCreateView, self).form_valid(form)
@@ -94,6 +111,13 @@ class ItemUpdateView(UpdateView):
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
+        manufactor = form.cleaned_data['manufactor']
+        category = form.cleaned_data['category']
+        if manufactor is None:
+            raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
+        if category is None:
+            raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
+
         return super(ItemUpdateView, self).form_valid(form)
 
 
@@ -185,7 +209,10 @@ class ItemIssueView(FormView):
     def form_valid(self, form):
         selected_item_id = form.cleaned_data['select_item']
         selected_item = Item.objects.get(item_id=selected_item_id)
-        ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
+        if selected_item:
+            ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
+        else:
+            raise ValidationError(_('Выбран неверный товар'), code='invalid')
 
         return super(ItemIssueView, self).form_valid(form)
 

@@ -141,8 +141,8 @@ def category_raw(request):
             'active_tab': active_tab})
 
 
-def category_raw_one(request):
-    category_objs_raw = category_raw_sql_get_one(1)
+def category_raw_one(request, pk):
+    category_objs_raw = category_raw_sql_get_one(pk)
     form = CategoryRawModelForm()
 
     return render(request, 'catalog/category_raw.html', {
@@ -173,7 +173,7 @@ def python_func_get_category_id():
         cursor.execute(sql_select)
         result = cursor.fetchone()
 
-    return result[0]
+    return result[0] if result else None
 
 
 @query_log(log_name=log_name)
@@ -184,7 +184,7 @@ def category_raw_by_func(request):
     cur = con.cursor()
     cur.execute('select db_func_get_category_id()')
     category_id = cur.fetchone()[0]
-    category_objs_raw = category_raw_sql_get_one(category_id)
+    category_objs_raw = category_raw_sql_get_one(category_id) if category_id else []
     form = CategoryRawModelForm()
 
     return render(request, 'catalog/category_raw_by_func.html', {

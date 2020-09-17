@@ -41,7 +41,7 @@ urlpatterns = [
     url(r'^items/news/$', views.ItemNewsListView.as_view(), name='item_news'),
     url(r'^items/ne_lookup/$', views.ItemListNEView.as_view(), name='item_ne'),
     url(r'^items/abs_lookup/$', views.ItemListABSView.as_view(), name='item_abs'),
-    url(r'^items/send_issue/$', views.ItemIssueView.as_view(), name='item_issue'),
+    url(r'^items/send_issue/$', views.ItemIssueView.as_view(), name='item_issue_send'),
     # url(r'^items/to_csv/$', views.ItemExportView.as_view(), name='items_to_csv'),
     # url(r'^items/to_csv/$', views.items_large_to_csv_view, name='items_to_csv'),
     url(r'^items/to_csv/$', views.items_to_csv_by_template_view, name='items_to_csv'),
@@ -74,7 +74,7 @@ urlpatterns = [
         name='orderItem_delete'),
 
     url(r'^categories_raw/$', views.category_raw, name='categories_raw'),
-    url(r'^categories_raw_one/$', views.category_raw_one,
+    url(r'^categories_raw_one/(?P<pk>[-\w]+)$', views.category_raw_one,
         name='categories_raw_one'),
     url(r'^categories_raw_all/$', views.category_raw_all,
         name='categories_raw_all'),
