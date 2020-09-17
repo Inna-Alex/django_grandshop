@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
@@ -47,7 +48,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return super(OrderCreateView, self).form_valid(form)
 
 
-class OrderUpdateView(UpdateView):
+class OrderUpdateView(LoginRequiredMixin, UpdateView):
     model = Order
     fields = ['comment', 'status']
 
@@ -62,6 +63,7 @@ class OrderUpdateView(UpdateView):
 
 
 @query_log(log_name=log_name)
+@login_required
 def order_confirm_delete_form(request, pk):
     order = Order.objects.get(order_id=pk)
     if request.method == 'POST':

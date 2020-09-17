@@ -1,7 +1,7 @@
 import uuid
 
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from catalog.models import Category, Item, Manufactor
 
@@ -112,4 +112,4 @@ class ItemModelTest(TestCase):
     def test_get_absolute_url(self):
         item = Item.objects.get(item_id=self.item_uuid)
         self.assertEquals(item.get_absolute_url(),
-                          '/catalog/item/' + str(self.item_uuid))
+                          '/catalog/item/counter/' + str(self.item_uuid))

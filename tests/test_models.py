@@ -1,10 +1,10 @@
 import pytest
 import uuid
 
-from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 from catalog.models import Category, Item, ItemIssue, Manufactor
+from users.models import CustomUser
 
 pytestmark = [pytest.mark.django_db]
 
@@ -119,7 +119,7 @@ class TestItemIssueModel:
         item = Item.objects.create(item_id=item_uuid, manufactor=manufactor, category=category,
                                    name='Когда скучно', summary='Можно включить', price=999.90, quantity=14,
                                    availability=False)
-        user = User.objects.create_user(username='stuff', email='stuff@mail.ru', password='123456')
+        user = CustomUser.objects.create_user(email='test@test.ru', password='test-pwd')
         ItemIssue.objects.create(item=item, created_by=user)
 
     def test_item_issue_label(self, db, init_db):

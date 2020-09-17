@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Transform
 from django.db.models.fields import Field, IntegerField
 from django.urls import reverse
-from django.utils.translation import ngettext_lazy, ugettext_lazy as _
+from django.utils.translation import ngettext_lazy, gettext_lazy as _
 
 from django_currentuser.db.models import CurrentUserField
 
@@ -41,7 +41,8 @@ class Manufactor(models.Model):
     """
     manufactor_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200, verbose_name=_('Название'),
-                            help_text="Введите название производителя")
+                            help_text="Введите название производителя",
+                            unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
                                help_text="Введите описание производителя")
     created_date = models.DateTimeField(auto_now_add=True,
@@ -67,7 +68,8 @@ class Category(models.Model):
     """
     category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200, verbose_name=_('Название'),
-                            help_text="Введите название категории")
+                            help_text="Введите название категории",
+                            unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
                                help_text="Введите описание категории")
     availability = models.BooleanField(default=False,
@@ -105,7 +107,8 @@ class Item(models.Model):
                                  on_delete=models.SET_NULL,
                                  null=True, blank=True)
     name = models.CharField(max_length=200, verbose_name=_('Наименование'),
-                            help_text="Введите название продукта")
+                            help_text="Введите название продукта",
+                            unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
                                help_text="Введите описание продукта")
     price = models.DecimalField(max_digits=10, verbose_name=_('Цена'),
@@ -181,7 +184,9 @@ class Order(models.Model):
     def __str__(self):
         return self.comment
 
-    indexes = [
+    class Meta:
+        ordering = ['created_date']
+        indexes = [
             models.Index(fields=['created_date'])
             ]
 

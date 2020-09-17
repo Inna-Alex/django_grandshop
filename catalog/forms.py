@@ -64,16 +64,14 @@ class CategoryRawModelForm(ModelForm):
         fields = ['name', 'summary', 'availability']
 
 
-class IssueForm(forms.Form):
-    item_choices = []
-    items = Item.objects.all()
-    if items:
-        for item in items:
-            item_choices.append((item.item_id, item.name))
+def get_item_choices():
+    return [(item.item_id, item.name) for item in Item.objects.all()]
 
+
+class IssueForm(forms.Form):
     select_item = forms.ChoiceField(
         widget=forms.Select,
-        choices=item_choices,
+        choices=get_item_choices,
         label='Продукт',
         required=True,
     )
