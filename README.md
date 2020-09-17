@@ -1,5 +1,5 @@
 # Online store Grand Shop
-Grand Shop is a typical online store, written in Python (Django). It is written as a separate application (app) with the possible connection of additional applications.
+Grand Shop is a typical online store, written in Python (Django, Vue.js). It is written as a separate application (app) with the possible connection of additional applications.
 ### Includes the following typical modules:
 1. **Registration** of a new user (custom registration — by user email).
 2. **Authorization** of the registered user (login, logout) — custom authorization.
