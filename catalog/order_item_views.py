@@ -15,17 +15,6 @@ log_name = consts.logs['order_item']
 init_log(log_name)
 
 
-# class OrderItemListView(PageTitleMixin, generic.ListView):
-#     model = OrderItem
-#     paginate_by = 10
-#     page_title = 'Заказ'
-#     active_tab = active_tab
-
-
-# class OrderItemDetailView(generic.DetailView):
-#     model = OrderItem
-
-
 @query_log(log_name=log_name)
 def orderitem_create_view(request, order_id):
     page_title = 'Добавить продукт в заказ'
