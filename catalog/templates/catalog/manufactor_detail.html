@@ -1,7 +1,9 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }} - {{ manufactor.name }}</title>{% endblock %}
+
 {% block content %}
-  <h1>{{ manufactor.name }}</h1>
+  <h1 class="m-top-20">{{ manufactor.name }}</h1>
 
     <table>
 	  <tr>

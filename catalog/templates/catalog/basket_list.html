@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1 class="inline-b m-top-20">Корзина</h1>
+
+    {% if basket_list %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for basket in basket_list %}
+                    <tr>
+                        <td>{{ basket.item.name }}</td>
+                        <td>{{ basket.quantity }}</td>
+                        <td>{{ basket.item.price }} руб.</td>
+                        <td>
+                            <form action="{% url 'rm_item_from_basket' pk=basket.basket_id%}" method="post">
+                                {% csrf_token %}
+                                <input type="submit" value="Удалить продукт">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>Итого</td>
+                    <td></td>
+                    <td>{{ total }} руб.</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <a href="{% url 'make_order' %}" class="btn-add m-top-20">Оформить заказ</a>
+    {% else %}
+      <p>В Вашей корзине нет ни одного продукта</p>
+    {% endif %}
+{% endblock %}

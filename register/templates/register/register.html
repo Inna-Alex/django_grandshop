@@ -1,9 +1,10 @@
 {% extends "base_generic.html" %}
 
-{% block title %}<title>Создать аккаунт</title>{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content %}
+	<h3 class="m-top-20">Для регистрации заполните все обязательные поля</h3>
+	<h6 class="font-weight-bold font-italic">(помечены *)</h6>
     <form method="POST">
 	{% csrf_token %}
 	{{ form | crispy }}

@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1 class="inline-b m-top-20">Список заявок</h1>
+    {% if itemissue_list %}
+    <ul class="non-list">
+
+      {% for issue in itemissue_list %}
+        {% cycle 'one-by-one' '' as itemcolors silent %}
+          <li class="{{ itemcolors }}">
+              <a href="{{ issue.get_absolute_url }}" class="non-a">{{ issue.item }}</a>
+          </li>
+      {% endfor %}
+	  
+    </ul>
+    {% else %}
+      <p>В интернет-магазине нет ни одной заявки</p>
+    {% endif %}       
+{% endblock %}

@@ -21,7 +21,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('status', 'comment', 'created_date')
+    list_display = ('status', 'created_date')
 
 
 @admin.register(OrderItem)

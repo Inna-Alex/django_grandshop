@@ -1,5 +1,7 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }}{% if category %} - {{ category.name }}{% endif %}</title>{% endblock %}
+
 {% block content %}
 <form action="" method="post">
     {% csrf_token %}

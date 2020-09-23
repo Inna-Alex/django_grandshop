@@ -1,8 +1,10 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }} - {{ category.name }}</title>{% endblock %}
+
 {% block content %}
 
-<h1>Удалить категорию</h1>
+<h1 class="m-top-20">Удалить категорию</h1>
 
 <p>Вы уверены что хотите удалить категорию: {{ category }}?</p>
 

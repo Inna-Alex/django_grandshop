@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
+<h3 class="m-top-20">Введите email и пароль</h3>
 {% if auth_error %}
   <p>Введены неверный логин/пароль. Попробуйте снова</p>
 {% endif %}
@@ -28,7 +28,7 @@
 	</tr>
 	</table>
 
-	<input type="submit" value="login">
+	<input type="submit" value="Войти">
 	<input type="hidden" name="next" value="{{ next }}">
 	</form>
 {% else %}
