@@ -3,10 +3,9 @@ import csv
 # from csv_export.views import CSVExportView
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponse, StreamingHttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -17,41 +16,35 @@ from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
 from .forms import IssueForm
+from .mixins import PageTitleMixin
 from .models import Category, Item, ItemIssue, Manufactor
-from catalog.loggers.query_logger_config import init_log
-from catalog.utils import consts
-from catalog.utils.main import query_log
+from .loggers.query_logger_config import init_log
+from .utils import consts
+from .utils.main import query_log
 
 active_tab = '\'items\''
 log_name = consts.logs['item']
 init_log(log_name)
 
 
-class ItemListView(generic.ListView):
+class ItemListView(PageTitleMixin, generic.ListView):
     model = Item
     paginate_by = 10
-
-    @query_log(log_name=log_name)
-    def get_context_data(self, **kwargs):
-        context = super(ItemListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Продукты'
+    active_tab = active_tab
 
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
         queryset = Item.objects.extra(select={'is_recent': 'created_date > %s'},
-                                  select_params=(date_10_days,))
+                                      select_params=(date_10_days,))
         return queryset
 
 
 # CRUD start
-class ItemDetailView(generic.DetailView):
+class ItemDetailView(PageTitleMixin, generic.DetailView):
     model = Item
-    
-    def get_context_data(self, **kwargs):
-        context = super(ItemDetailView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Продукт'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def get_object(self):
@@ -61,15 +54,12 @@ class ItemDetailView(generic.DetailView):
         return obj
 
 
-class ItemCreateView(CreateView):
+class ItemCreateView(PageTitleMixin, CreateView):
     model = Item
     fields = ['manufactor', 'category', 'name', 'summary', 'price',
               'availability', 'quantity']
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemCreateView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Создать продукт'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
@@ -99,15 +89,12 @@ class ItemCreateView(CreateView):
         return super(ItemCreateView, self).form_valid(form)
 
 
-class ItemUpdateView(UpdateView):
+class ItemUpdateView(PageTitleMixin, UpdateView):
     model = Item
     fields = ['manufactor', 'category', 'name', 'summary', 'availability',
               'price', 'quantity']
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemUpdateView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Редактировать продукт'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
@@ -121,14 +108,11 @@ class ItemUpdateView(UpdateView):
         return super(ItemUpdateView, self).form_valid(form)
 
 
-class ItemDeleteView(DeleteView):
+class ItemDeleteView(PageTitleMixin, DeleteView):
     model = Item
     success_url = reverse_lazy('items')
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemDeleteView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Удалить продукт'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def delete(self, request, *args, **kwargs):
@@ -136,16 +120,12 @@ class ItemDeleteView(DeleteView):
 # CRUD end
 
 
-class ItemNewsListView(generic.ListView):
+class ItemNewsListView(PageTitleMixin, generic.ListView):
     model = Item
     paginate_by = 10
     template_name = 'catalog/item_news_list.html'
-
-    @query_log(log_name=log_name)
-    def get_context_data(self, **kwargs):
-        context = super(ItemNewsListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Новинки'
+    active_tab = active_tab
 
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
@@ -191,30 +171,6 @@ class ItemCounterRedirectView(RedirectView):
         item = get_object_or_404(Item, pk=kwargs['pk'])
         item.update_counter_view()
         return super(ItemCounterRedirectView, self).get_redirect_url(*args, **kwargs)
-
-
-@method_decorator(login_required, name='dispatch')
-class ItemIssueView(FormView):
-    form_class = IssueForm
-    success_url = reverse_lazy('items')
-    template_name = 'catalog/item_issue.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemIssueView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-
-        return context
-
-    @query_log(log_name=log_name)
-    def form_valid(self, form):
-        selected_item_id = form.cleaned_data['select_item']
-        selected_item = Item.objects.get(item_id=selected_item_id)
-        if selected_item:
-            ItemIssue.objects.create(item=selected_item, created_by=self.request.user)
-        else:
-            raise ValidationError(_('Выбран неверный товар'), code='invalid')
-
-        return super(ItemIssueView, self).form_valid(form)
 
 
 # class ItemExportView(CSVExportView):

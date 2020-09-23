@@ -1,4 +1,5 @@
-logs = {'category': 'catalog.category',
+logs = {'basket': 'catalog.basket',
+        'category': 'catalog.category',
         'item': 'catalog.item',
         'manufactor': 'catalog.manufactor',
         'order': 'catalog.order',

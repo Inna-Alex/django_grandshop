@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>{{ page_title }} - {{ itemissue.item }}</title>{% endblock %}
+
+{% block content %}
+  <h1 class="m-top-20">{{ itemissue.item }}</h1>
+
+    <table>
+	  <tr>
+		  <td class="font-weight-bold">Продукт:</td>
+		  <td class="p-left-10">{{ itemissue.item }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Клиент:</td>
+		  <td class="p-left-10">{{ itemissue.created_by }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Дата создания:</td>
+		  <td class="p-left-10">{{ itemissue.created_date|date:"d.m.Y H:i:s" }}</td>
+	  </tr>
+  </table>
+
+{% endblock %}

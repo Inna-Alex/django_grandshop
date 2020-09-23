@@ -1,7 +1,9 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }} - {{ orderitem.name }}</title>{% endblock %}
+
 {% block content %}
-<form action="{% url 'orderitem_update_save' pk=order_item_id %}" method="post" data-get-order-item-price-url="{% url 'calculate_price' orderitem=orderitem.item_id %}">
+<form class="m-top-20" action="{% url 'orderitem_update_save' pk=order_item_id %}" method="post" data-get-order-item-price-url="{% url 'calculate_price' orderitem=orderitem.item_id %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
         <table>

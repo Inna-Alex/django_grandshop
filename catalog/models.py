@@ -154,12 +154,8 @@ class Order(models.Model):
     """
     Model representing an order
     """
-    order_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
-                                help_text="Уникальный ID")
-    comment = models.CharField(max_length=500, verbose_name=_('Комментарий'),
-                               help_text="Комментарий к заказу")
+    order_id = models.BigAutoField(primary_key=True, help_text="Номер заказа")
     customer = CurrentUserField()
-
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания заказа")
@@ -182,7 +178,7 @@ class Order(models.Model):
         return reverse('order_detail', args=[str(self.order_id)])
 
     def __str__(self):
-        return self.comment
+        return str(self.order_id).zfill(10)
 
     class Meta:
         ordering = ['created_date']
@@ -217,6 +213,28 @@ class OrderItem(models.Model):
         return str(self.order_item_id)
 
 
+class Basket(models.Model):
+    """
+    Model representing user's chosen items
+    """
+    basket_id = models.AutoField(primary_key=True)
+    item = models.ForeignKey('Item', verbose_name=_('Продукт'),
+                             on_delete=models.SET_NULL,
+                             null=True, blank=True)
+    quantity = models.IntegerField(verbose_name=_('Количество'),
+                                   help_text="Введите количество продукта",
+                                   default=1)
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'),
+                                        help_text="Дата добавления в корзину")
+    customer = models.ForeignKey(CustomUser, verbose_name=_('Пользователь'),
+                                 on_delete=models.SET_NULL,
+                                 null=True, blank=True)
+
+    class Meta:
+        ordering = ['created_date']
+
+
 class ItemIssue(models.Model):
     """
     Model representing an item issue from user
@@ -231,6 +249,9 @@ class ItemIssue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания заявки")
+
+    def get_absolute_url(self):
+        return reverse('item_issue_detail', args=[str(self.item_issue_id)])
 
     def __str__(self):
         return str(self.item)

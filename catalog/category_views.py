@@ -8,77 +8,62 @@ from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import CategoryRawModelForm
+from .mixins import PageTitleMixin
 from .models import Category
-from catalog.loggers.query_logger_config import init_log
-from catalog.utils import consts
-from catalog.utils.main import query_log
+from .loggers.query_logger_config import init_log
+from .utils import consts
+from .utils.main import query_log
 
 active_tab = '\'categories\''
 log_name = consts.logs['category']
 init_log(log_name)
 
 
-class CategoryListView(generic.ListView):
+class CategoryListView(PageTitleMixin, generic.ListView):
     model = Category
     paginate_by = 10
-
-    @query_log(log_name=log_name)
-    def get_context_data(self, **kwargs):
-        context = super(CategoryListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Категории'
+    active_tab = active_tab
 
 
 # CRUD
-class CategoryDetailView(generic.DetailView):
+class CategoryDetailView(PageTitleMixin, generic.DetailView):
     model = Category
-
-    def get_context_data(self, **kwargs):
-        context = super(CategoryDetailView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Категория'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def get_object(self, queryset=None):
         return super(CategoryDetailView, self).get_object()
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(PageTitleMixin, CreateView):
     model = Category
     fields = '__all__'
-
-    def get_context_data(self, **kwargs):
-        context = super(CategoryCreateView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Создать категорию'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
         return super(CategoryCreateView, self).form_valid(form)
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(PageTitleMixin, UpdateView):
     model = Category
     fields = ['name', 'summary', 'availability']
-
-    def get_context_data(self, **kwargs):
-        context = super(CategoryUpdateView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Редактировать категорию'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
         return super(CategoryUpdateView, self).form_valid(form)
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(PageTitleMixin, DeleteView):
     model = Category
     success_url = reverse_lazy('categories')
-
-    def get_context_data(self, **kwargs):
-        context = super(CategoryDeleteView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+    page_title = 'Удалить категорию'
+    active_tab = active_tab
 
     @query_log(log_name=log_name)
     def delete(self, request, *args, **kwargs):

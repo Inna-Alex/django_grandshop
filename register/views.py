@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as login_user, logout as logout_user
-from django import forms
 
 active_tab_login = '\'login\''
 active_tab_logout = '\'logout\''
 active_tab_register = '\'register\''
 
+
 def register(response):
+    page_title = 'Создать аккаунт'
     if response.method == 'POST':
         form = RegisterForm(response.POST)
         if form.is_valid():
@@ -17,10 +18,11 @@ def register(response):
         form = RegisterForm()
 
     return render(response, 'register/register.html',
-                  {'form': form,
-                  'active_tab': active_tab_register})
+                  {'form': form, 'page_title': page_title, 'active_tab': active_tab_register})
+
 
 def login(request):
+    page_title = 'Войти'
     if request.method == 'POST':
         form = LoginForm(request.POST)
         username = request.POST['username']
@@ -32,18 +34,20 @@ def login(request):
         else:
             auth_error = True
             variables = {
-                'form': form, 'auth_error': auth_error, 'active_tab': active_tab_login
-            }
+                'form': form, 'auth_error': auth_error, 'page_title': page_title, 'active_tab': active_tab_login}
             return render(request, 'registration/login.html', context=variables)
     else:
         form = LoginForm()
 
-    return render(request, 'registration/login.html', {'form': form,
+    return render(request, 'registration/login.html', {'form': form, 'page_title': page_title,
                                                        'active_tab': active_tab_login})
 
+
 def logout(request):
+    page_title = 'Выйти'
     if request.method == 'POST':
         logout_user(request)
         return redirect('/')
     else:
-        return render(request, 'registration/logout.html', {'active_tab': active_tab_logout})
+        return render(request, 'registration/logout.html', {'page_title': page_title,
+                                                            'active_tab': active_tab_logout})

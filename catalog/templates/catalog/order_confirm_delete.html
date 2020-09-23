@@ -1,8 +1,10 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }} - {{ order }}</title>{% endblock %}
+
 {% block content %}
 
-<h1>Удалить заказ</h1>
+<h1 class="m-top-20">Удалить заказ</h1>
 
 <p>Вы уверены что хотите удалить заказ: {{ order }}?</p>
 

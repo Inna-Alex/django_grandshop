@@ -3,19 +3,19 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Category, Item, Order, OrderItem
+from .models import Category, Item, Order, OrderItem, Basket
 
 
 class OrderModelForm(ModelForm):
     class Meta:
         model = Order
-        fields = ['comment']
+        fields = ['status']
 
 
 class OrderDetailModelForm(ModelForm):
     class Meta:
         model = Order
-        fields = ['status', 'comment', 'customer']
+        fields = ['status', 'customer']
 
 
 class OrderItemCreateModelForm(ModelForm):
@@ -76,5 +76,3 @@ class IssueForm(forms.Form):
         required=True,
     )
     select_item.widget.attrs.update({'class': 'm-left-15'})
-
-

@@ -1,20 +1,18 @@
 {% extends "base_generic.html" %}
 
+{% block title %}<title>{{ page_title }} - {{ order }}</title>{% endblock %}
+
 {% block css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/tables.css' %}">
 {% endblock %}
 
 {% block content %}
-  <h1>Ваш заказ</h1>
+  <h1 class="m-top-20">Ваш заказ: {{ order }}</h1>
   <table>
 	  <tr>
 		  <td class="font-weight-bold">Статус:</td>
 		  <td class="p-left-10">{{ order.get_status_display }}</td>
-	  </tr>
-	  <tr>
-		  <td class="font-weight-bold">Комментарий:</td>
-		  <td class="p-left-10">{{ order.comment }}</td>
 	  </tr>
 	  <tr>
 		  <td class="font-weight-bold">Покупатель:</td>

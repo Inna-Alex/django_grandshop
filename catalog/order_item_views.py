@@ -2,38 +2,33 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template.defaultfilters import timesince
 from django.urls import reverse, reverse_lazy
-from django.views import generic
 from django.views.generic.edit import DeleteView
 
-from .forms import OrderDetailModelForm
-from .forms import OrderItemCreateModelForm, OrderItemUpdateModelForm
+from .forms import OrderDetailModelForm, OrderItemCreateModelForm, OrderItemUpdateModelForm
+from .loggers.query_logger_config import init_log
 from .models import Item, Order, OrderItem, ru_time_strings
-from catalog.loggers.query_logger_config import init_log
-from catalog.utils import consts
-from catalog.utils.main import query_log
+from .utils import consts
+from .utils.main import query_log
 
 active_tab = '\'orders\''
 log_name = consts.logs['order_item']
 init_log(log_name)
 
 
-class OrderItemListView(generic.ListView):
-    model = OrderItem
-    paginate_by = 10
-
-    @query_log(log_name=log_name)
-    def get_context_data(self, **kwargs):
-        context = super(OrderItemListView, self).get_context_data(**kwargs)
-        context['active_tab'] = active_tab
-        return context
+# class OrderItemListView(PageTitleMixin, generic.ListView):
+#     model = OrderItem
+#     paginate_by = 10
+#     page_title = 'Заказ'
+#     active_tab = active_tab
 
 
-class OrderItemDetailView(generic.DetailView):
-    model = OrderItem
+# class OrderItemDetailView(generic.DetailView):
+#     model = OrderItem
 
 
 @query_log(log_name=log_name)
 def orderitem_create_view(request, order_id):
+    page_title = 'Добавить продукт в заказ'
     # Если данный запрос типа POST, тогда
     if request.method == 'POST':
         form = OrderItemCreateModelForm(request.POST)
@@ -55,13 +50,13 @@ def orderitem_create_view(request, order_id):
     return render(
         request,
         'catalog/orderitem_form.html',
-        context={'form': form, 'order_id': order_id,
-                 'active_tab': active_tab}
+        context={'form': form, 'order_id': order_id, 'page_title': page_title, 'active_tab': active_tab}
     )
 
 
 @query_log(log_name=log_name)
 def orderitem_update_view(request, pk):
+    page_title = 'Редактировать продукт заказа'
     if request.method == 'POST':
         order_id = request.POST.get('order_id', None)
         quantity = request.POST.get('quantity', None)
@@ -84,6 +79,7 @@ def orderitem_update_view(request, pk):
                      'orderitem': order_item.orderitem,
                      'quantity': quantity,
                      'price': price,
+                     'page_title': page_title,
                      'active_tab': active_tab}
         )
 
@@ -135,6 +131,7 @@ class OrderItemDeleteView(DeleteView):
 
 @query_log(log_name=log_name)
 def show_order_detail_view(request, pk):
+    page_title = 'Заказ'
     order_items = OrderItem.objects.filter(order_id=pk).select_related('order')
     if order_items:
         order = order_items.first().order
@@ -155,11 +152,13 @@ def show_order_detail_view(request, pk):
             'order': order,
             'sincetime': since_time,
             'order_items': order_items,
+            'page_title': page_title,
             'active_tab': active_tab})
 
 
 @query_log(log_name=log_name)
 def remove_order_detail_items_view(request):
+    page_title = 'Заказ'
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
         order_id = request.POST.get('order_id')
@@ -173,4 +172,5 @@ def remove_order_detail_items_view(request):
             'form': form,
             'order': order,
             'order_items': order_items,
+            'page_title': page_title,
             'active_tab': active_tab})
