@@ -4,7 +4,7 @@ from django.template.defaultfilters import timesince
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import DeleteView
 
-from .forms import OrderDetailModelForm, OrderItemCreateModelForm, OrderItemUpdateModelForm
+from .forms import OrderDetailModelForm, OrderItemCreateUpdateForm
 from .loggers.query_logger_config import init_log
 from .models import Item, Order, OrderItem, ru_time_strings
 from .utils import consts
@@ -20,7 +20,7 @@ def orderitem_create_view(request, order_id):
     page_title = 'Добавить продукт в заказ'
     # Если данный запрос типа POST, тогда
     if request.method == 'POST':
-        form = OrderItemCreateModelForm(request.POST)
+        form = OrderItemCreateUpdateForm(request.POST)
         if form.is_valid():
             order_inst = Order.objects.get(order_id=order_id)
             orderitem = OrderItem.objects.create(
@@ -34,7 +34,7 @@ def orderitem_create_view(request, order_id):
 
     # Если это GET (или какой-либо еще), создать форму по умолчанию.
     else:
-        form = OrderItemCreateModelForm(initial={'order': order_id})
+        form = OrderItemCreateUpdateForm(initial={'order': order_id, 'quantity': 1})
 
     return render(
         request,
@@ -52,7 +52,7 @@ def orderitem_update_view(request, pk):
         price = request.POST.get('price', None)
         order_item = OrderItem.objects.get(order_item_id=pk)
 
-        form = OrderItemUpdateModelForm(initial={
+        form = OrderItemCreateUpdateForm(initial={
             'order': order_id,
             'pk': pk,
             'orderitem': order_item.orderitem.item_id,
@@ -76,7 +76,7 @@ def orderitem_update_view(request, pk):
 @query_log(log_name=log_name)
 def orderitem_update_save_view(request, pk):
     if request.method == 'POST':
-        form = OrderItemUpdateModelForm(request.POST)
+        form = OrderItemCreateUpdateForm(request.POST)
         if form.is_valid():
             orderitem = OrderItem.objects.get(order_item_id=pk)
             orderitem.quantity = form.cleaned_data['quantity']

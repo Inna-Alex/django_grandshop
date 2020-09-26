@@ -25,6 +25,11 @@ class CategoryListView(PageTitleMixin, generic.ListView):
     page_title = 'Категории'
     active_tab = active_tab
 
+    @query_log(log_name=log_name)
+    def get_context_data(self, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        return context
+
 
 # CRUD
 class CategoryDetailView(PageTitleMixin, generic.DetailView):
