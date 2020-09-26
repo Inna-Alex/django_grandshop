@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 import uuid
 
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Transform
@@ -22,18 +21,6 @@ ru_time_strings = {
     'hour': ngettext_lazy('%d час', '%d часов'),
     'minute': ngettext_lazy('%d минута', '%d минут'),
 }
-
-
-def validate_positive(value):
-    if value <= 0:
-        raise ValidationError(_('Поле должно быть > 0. Получено значение %(value)s'),
-                              params={'value': value}, code='invalid')
-
-
-def validate_zero_or_positive(value):
-    if value < 0:
-        raise ValidationError(_('Поле должно быть >= 0. Получено значение %(value)s'),
-                              params={'value': value}, code='invalid')
 
 
 class Manufactor(models.Model):
@@ -113,14 +100,12 @@ class Item(models.Model):
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
                                help_text="Введите описание продукта")
     price = models.DecimalField(max_digits=10, verbose_name=_('Цена'),
-                                decimal_places=2,
-                                validators=[validate_positive])
+                                decimal_places=2,)
     availability = models.BooleanField(verbose_name=_('В наличии'),
                                        default=False,
                                        help_text="Выберите если продукт есть в наличии")
     quantity = models.IntegerField(verbose_name=_('Количество'),
-                                   help_text="Введите количество продукта",
-                                   validators=[validate_zero_or_positive])
+                                   help_text="Введите количество продукта",)
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания продукта")

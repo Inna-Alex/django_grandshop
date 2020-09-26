@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 import csv
+import decimal
 # from csv_export.views import CSVExportView
 
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,7 @@ from django.views import generic
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
-from .forms import IssueForm
+from .forms import ItemCreateUpdateForm
 from .mixins import PageTitleMixin
 from .models import Category, Item, ItemIssue, Manufactor
 from .loggers.query_logger_config import init_log
@@ -32,6 +33,11 @@ class ItemListView(PageTitleMixin, generic.ListView):
     paginate_by = 10
     page_title = 'Продукты'
     active_tab = active_tab
+
+    @query_log(log_name=log_name)
+    def get_context_data(self, **kwargs):
+        context = super(ItemListView, self).get_context_data(**kwargs)
+        return context
 
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
@@ -56,55 +62,23 @@ class ItemDetailView(PageTitleMixin, generic.DetailView):
 
 class ItemCreateView(PageTitleMixin, CreateView):
     model = Item
-    fields = ['manufactor', 'category', 'name', 'summary', 'price',
-              'availability', 'quantity']
+    form_class = ItemCreateUpdateForm
     page_title = 'Создать продукт'
     active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
-        manufactor = form.cleaned_data['manufactor']
-        category = form.cleaned_data['category']
-        manufactor_error = category_error = False
-        if manufactor and hasattr(manufactor, 'pk'):
-            try:
-                Manufactor.objects.get(manufactor_id=manufactor.pk)
-            except ObjectDoesNotExist:
-                manufactor_error = True
-        else:
-            manufactor_error = True
-        if category and hasattr(category, 'pk'):
-            try:
-                Category.objects.get(category_id=category.pk)
-            except ObjectDoesNotExist:
-                category_error = True
-        else:
-            category_error = True
-
-        if manufactor_error:
-            raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
-        if category_error:
-            raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
-
         return super(ItemCreateView, self).form_valid(form)
 
 
 class ItemUpdateView(PageTitleMixin, UpdateView):
     model = Item
-    fields = ['manufactor', 'category', 'name', 'summary', 'availability',
-              'price', 'quantity']
+    form_class = ItemCreateUpdateForm
     page_title = 'Редактировать продукт'
     active_tab = active_tab
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
-        manufactor = form.cleaned_data['manufactor']
-        category = form.cleaned_data['category']
-        if manufactor is None:
-            raise ValidationError(_('Поле Производитель не должно быть пустым'), code='invalid')
-        if category is None:
-            raise ValidationError(_('Поле Категория не должно быть пустым'), code='invalid')
-
         return super(ItemUpdateView, self).form_valid(form)
 
 
@@ -126,6 +100,11 @@ class ItemNewsListView(PageTitleMixin, generic.ListView):
     template_name = 'catalog/item_news_list.html'
     page_title = 'Новинки'
     active_tab = active_tab
+
+    @query_log(log_name=log_name)
+    def get_context_data(self, **kwargs):
+        context = super(ItemNewsListView, self).get_context_data(**kwargs)
+        return context
 
     def get_queryset(self):
         date_10_days = date.today() - timedelta(days=10)
