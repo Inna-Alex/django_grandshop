@@ -41,6 +41,7 @@ urlpatterns = [
 
     url(r'^orders/$', views.OrderListView.as_view(), name='orders'),
     url(r'^order/(?P<pk>[-\w]+)$', views.show_order_detail_view, name='order_detail'),
+    url(r'^order/(?P<pk>[-\w]+)/get_payed/$', views.order_get_payed, name='order_get_payed'),
     url(r'^ajax/calculate_price/$', views.calculate_price, name='calculate_price'),
     url(r'^ajax/calculate_price/(?P<orderitem>[-\w]+)/$', views.calculate_price, name='calculate_price'),
     url(r'^remove_items/', views.remove_order_detail_items_view, name="remove_items"),

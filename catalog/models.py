@@ -11,6 +11,7 @@ from django.utils.translation import ngettext_lazy, gettext_lazy as _
 
 from django_currentuser.db.models import CurrentUserField
 
+from catalog.signals import order_payed
 from users.models import CustomUser
 
 ru_time_strings = {
@@ -177,6 +178,13 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', args=[str(self.order_id)])
 
+    def set_status_payed(self):
+        self.status = 'p'
+        self.save()
+
+    def send_signal_payed(self):
+        order_payed.send(sender=self.__class__, order=self, user=self.customer)
+
     def __str__(self):
         return str(self.order_id).zfill(10)
 
@@ -255,6 +263,22 @@ class ItemIssue(models.Model):
 
     def __str__(self):
         return str(self.item)
+
+
+class MailBox(models.Model):
+    """
+    Model representing an email to be sent to users
+    """
+    mail_id = models.BigAutoField(primary_key=True, verbose_name="Номер письма")
+    order_id = models.BigIntegerField(verbose_name=_('Номер заказа'), null=True, blank=True)
+    subject = models.CharField(max_length=500, verbose_name=_('Тема письма'))
+    body = models.TextField(max_length=1000, verbose_name=_('Тело письма'))
+    customer = models.ForeignKey(CustomUser, verbose_name=_('Клиент'),
+                                 on_delete=models.SET_NULL,
+                                 null=True, blank=True)
+    is_send = models.BooleanField(default=False, verbose_name=_('Отправлено'))
+    created_date = models.DateTimeField(auto_now_add=True,
+                                        verbose_name=_('Дата создания'))
 
 
 @Field.register_lookup

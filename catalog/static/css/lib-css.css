@@ -122,6 +122,10 @@ h1, h2, h3, h4, h5, h6, p, a, li {
 	margin-left: 15px;
 }
 
+.m-right-30 {
+	margin-right: 30px;
+}
+
 .btn-add {
 	background: rgb(10,140,10);
 	border-radius: 2rem;

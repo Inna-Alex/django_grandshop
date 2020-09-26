@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from .forms import OrderModelForm
@@ -56,3 +56,13 @@ def order_confirm_delete_form(request, pk):
             'order': order,
             'page_title': page_title,
             'active_tab': active_tab_orders})
+
+
+@query_log(log_name=log_name)
+@login_required
+def order_get_payed(request, pk):
+    order = Order.objects.get(pk=pk)
+    order.set_status_payed()
+    order.send_signal_payed()
+
+    return redirect(reverse('order_detail', kwargs={'pk': pk}))

@@ -32,7 +32,11 @@
 	  </tr>
   </table>
 
-  <a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del m-top-20">Удалить заказ</a>
+	{% if order_items and order.status == 'c' %}
+	<a href="{% url 'order_get_payed' order.order_id %}" class="btn-add m-right-30">Оплатить заказ</a>
+	{% endif %}
+
+  	<a href="{% url 'order_delete' pk=order.order_id %}" class="btn-del m-top-20">Удалить заказ</a>
   
   <div style="" class="order_detail_items order_items_div">
     <h4>Выбранные продукты</h4>
