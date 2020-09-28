@@ -30,6 +30,7 @@ To run the project, you need Django preinstalled, as well as the following modul
 5. To rerun coverage: pip install coverage
 6. To install pytest: pip install pytest
                       pip install pytest-django.
+7. To install widget-tweaks: pip install django_widget-tweaks
                       
 Commands are given for installing modules via pip.
 
