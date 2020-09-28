@@ -6,8 +6,11 @@
 <form action="" method="post">
     {% csrf_token %}
     <table class="m-top-20">
-		{{ form.as_table }}
+        {% include "catalog/partials/form_field.html" with field=form.name class_name="width-400" %}
+        {% include "catalog/partials/form_field.html" with field=form.summary class_name="width-400" %}
+        {% include "catalog/partials/form_field.html" with field=form.availability class_name="m-left-30" %}
     </table>
+
     <input class="btn-add m-top-20" type="submit" value="Сохранить" />
 </form>
 {% endblock %}

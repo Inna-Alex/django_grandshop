@@ -11,7 +11,7 @@
                 <td>{{ form.orderitem.label_tag }}</td>
                 <td>
                     {{ form.orderitem.errors }}
-                    <select name="orderitem" id="id_orderitem" disabled="disabled">
+                    <select name="orderitem" id="id_orderitem" disabled="disabled" class="width-400">
                         <option value="{{ orderitem.item_id }}" selected="">{{orderitem.name}}</option>
                     </select>
                     {% if form.orderitem.help_text %}
@@ -38,7 +38,7 @@
                 </td>
             </tr>
         </table>
-        <input type="submit" value="Сохранить" />
+        <input class="btn-add m-top-20" type="submit" value="Сохранить" />
     </form>
 {% endblock %}
 

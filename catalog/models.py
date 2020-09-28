@@ -32,7 +32,8 @@ class Manufactor(models.Model):
                             help_text="Введите название производителя",
                             unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
-                               help_text="Введите описание производителя")
+                               help_text="Введите описание производителя",
+                               null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
                                         help_text="Дата создания производителя")
@@ -59,7 +60,8 @@ class Category(models.Model):
                             help_text="Введите название категории",
                             unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
-                               help_text="Введите описание категории")
+                               help_text="Введите описание категории",
+                               null=True, blank=True)
     availability = models.BooleanField(default=False,
                                        verbose_name=_('Доступность'),
                                        help_text="Выберите если категория доступна")
@@ -98,13 +100,14 @@ class Item(models.Model):
                             help_text="Введите название продукта",
                             unique=True)
     summary = models.CharField(max_length=500, verbose_name=_('Описание'),
-                               help_text="Введите описание продукта")
+                               help_text="Введите описание продукта",
+                               null=True, blank=True)
     price = models.DecimalField(max_digits=10, verbose_name=_('Цена'),
                                 decimal_places=2,)
     availability = models.BooleanField(verbose_name=_('В наличии'),
                                        default=False,
                                        help_text="Выберите если продукт есть в наличии")
-    quantity = models.IntegerField(verbose_name=_('Количество'),
+    quantity = models.IntegerField(verbose_name=_('Количество'), default=0,
                                    help_text="Введите количество продукта",)
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name=_('Дата создания'),
@@ -157,7 +160,7 @@ class Order(models.Model):
     )
 
     status = models.CharField(max_length=1, verbose_name=_('Статус'),
-                              choices=ORDER_STATUS, blank=True, default='c',
+                              choices=ORDER_STATUS, default='c',
                               help_text='Статус заказа')
 
     def get_absolute_url(self):
@@ -192,7 +195,7 @@ class OrderItem(models.Model):
                                   on_delete=models.SET_NULL,
                                   null=True, blank=True)
     quantity = models.IntegerField(verbose_name=_('Количество'),
-                                   help_text="Введите количество продукта")
+                                   help_text="Введите количество продукта", default=1)
     price = models.DecimalField(max_digits=10, verbose_name=_('Цена'),
                                 decimal_places=2)
     created_date = models.DateTimeField(auto_now_add=True,
@@ -257,7 +260,7 @@ class MailBox(models.Model):
     mail_id = models.BigAutoField(primary_key=True, verbose_name="Номер письма")
     order_id = models.BigIntegerField(verbose_name=_('Номер заказа'), null=True, blank=True)
     subject = models.CharField(max_length=500, verbose_name=_('Тема письма'))
-    body = models.TextField(max_length=1000, verbose_name=_('Тело письма'))
+    body = models.TextField(max_length=1000, verbose_name=_('Тело письма'), null=True, blank=True)
     customer = models.ForeignKey(CustomUser, verbose_name=_('Клиент'),
                                  on_delete=models.SET_NULL,
                                  null=True, blank=True)

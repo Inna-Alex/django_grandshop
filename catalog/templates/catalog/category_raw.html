@@ -3,9 +3,9 @@
 {% block content %}
   {% for category in category_objs %}
 	  <h1>{{ category.name }}</h1>
-	  <p><strong>Описание:</strong> {{ category.summary }}</p>
-	  <p><strong>Доступность:</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
-	  <p><strong>Дата создания:</strong> {{ category.created_date }}</p>
+	  <p><strong>{{ form.summary.label_tag }}</strong> {{ category.summary }}</p>
+	  <p><strong>{{ form.availability.label_tag }}</strong> {% if category.availability %} Да {% else %} Нет {% endif %}</p>
+	  <p><strong>Дата создания:</strong> {{ category.created_date|date:"d.m.Y H:i:s" }}</p>
 	  <br>
   {% endfor %}
   
