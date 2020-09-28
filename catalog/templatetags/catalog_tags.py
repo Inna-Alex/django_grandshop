@@ -6,13 +6,13 @@ from catalog.utils.main import date_format_str
 register = template.Library()
 
 
-@register.filter
+@register.filter(name='my_to_lower')
 @stringfilter
 def my_to_lower(value):
     return value.lower()
 
 
-@register.filter
+@register.filter(name='csv_bool_str')
 @stringfilter
 def csv_bool_str(value):
     if value == 'В наличии':
@@ -20,7 +20,7 @@ def csv_bool_str(value):
     return 'Да' if value == 'True' else 'Нет'
 
 
-@register.filter
+@register.filter(name='csv_date_str')
 @stringfilter
 def csv_date_str(value):
     if value.startswith('Дата'):

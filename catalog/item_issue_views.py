@@ -13,18 +13,19 @@ from catalog.loggers.query_logger_config import init_log
 from catalog.utils import consts
 from catalog.utils.main import query_log
 
-active_tab = '\'items\''
+active_tab = '\'item_issues\''
+active_tab_items = '\'items\''
 log_name = consts.logs['item']
 init_log(log_name)
 
 
 @method_decorator(login_required, name='dispatch')
-class ItemIssueView(PageTitleMixin, FormView):
+class ItemIssueSendView(PageTitleMixin, FormView):
     form_class = IssueForm
     success_url = reverse_lazy('items')
     template_name = 'catalog/item_issue.html'
     page_title = 'Сделать заявку'
-    active_tab = active_tab
+    active_tab = active_tab_items
 
     @query_log(log_name=log_name)
     def form_valid(self, form):
@@ -35,7 +36,7 @@ class ItemIssueView(PageTitleMixin, FormView):
         else:
             raise ValidationError(_('Выбран неверный товар'), code='invalid')
 
-        return super(ItemIssueView, self).form_valid(form)
+        return super(ItemIssueSendView, self).form_valid(form)
 
 
 class ItemIssueListView(PageTitleMixin, generic.ListView):

@@ -4,12 +4,14 @@
 
 {% block content %}
 <form class="m-top-20" action="" method="post" data-get-order-item-price-url="{% url 'calculate_price' %}">
-        {% csrf_token %}
-        <table>
-        {{ form }}
-        </table>
-        <input class="btn-add" type="submit" value="Добавить" />
-    </form>
+    {% csrf_token %}
+    <table>
+        {% include "catalog/partials/form_field.html" with field=form.orderitem class_name="width-400" %}
+        {% include "catalog/partials/form_field.html" with field=form.quantity %}
+        {% include "catalog/partials/form_field.html" with field=form.price %}
+    </table>
+    <input class="btn-add" type="submit" value="Добавить" />
+</form>
 {% endblock %}
 
 {% load static %}

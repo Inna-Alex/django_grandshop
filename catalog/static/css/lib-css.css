@@ -360,3 +360,18 @@ h1, h2, h3, h4, h5, h6, p, a, li {
     width: 40px;
     outline: none;
 }
+
+.help-block, .error-block {
+    display: inline-block;
+    margin: 0 20px 0 10px;
+    font-size: 13px;
+}
+
+.error-block {
+    font-size: 16px;
+    color: red;
+}
+
+.width-400 {
+    width: 400px;
+}

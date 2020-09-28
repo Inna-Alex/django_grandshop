@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 
+from .admin_forms import GroupAdminForm
 from .models import Category, Item, Manufactor, Order, OrderItem
 
 
@@ -27,3 +29,14 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'price', 'quantity', 'created_date')
+
+
+admin.site.unregister(Group)
+
+
+class GroupAdmin(admin.ModelAdmin):
+    form = GroupAdminForm
+    filter_horizontal = ['permissions']
+
+
+admin.site.register(Group, GroupAdmin)

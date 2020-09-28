@@ -18,6 +18,7 @@
 </head>
 
 <body>
+{% load admin_tags %}
 <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-orange to-shadow fixed-top">
     <div class="container">
@@ -67,6 +68,9 @@
           <a href="{% url 'manufactors' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'manufactors' ? 'lgi-active' : ''">Производители</a>
           <a href="{% url 'categories' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'categories' ? 'lgi-active' : ''">Категории</a>
           <a href="{% url 'items' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'items' ? 'lgi-active' : ''">Продукты</a>
+          {% if user|has_group:"Managers" %}
+            <a href="{% url 'item_issues' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'item_issues' ? 'lgi-active' : ''">Заявки</a>
+          {% endif %}
 		  {% if user.is_authenticated %}
 			<a href="{% url 'orders' %}" class="list-group-item" v-bind:class="{{active_tab}} === 'orders' ? 'lgi-active' : ''">Ваши заказы</a>
 			<a href="{% url 'logout'%}?next={{request.path}}" class="list-group-item" v-bind:class="{{active_tab}} === 'logout' ? 'lgi-active' : ''">Выйти</a>

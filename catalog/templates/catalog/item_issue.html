@@ -7,7 +7,7 @@
 <form action="" method="post">
     {% csrf_token %}
     <table class="m-top-20">
-		{{ form.as_table }}
+        {% include "catalog/partials/form_field.html" with field=form.select_item class_name="width-400" %}
     </table>
     <input class="btn-add m-top-20" type="submit" value="Отправить" />
 </form>
