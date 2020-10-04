@@ -1,9 +1,12 @@
-import pytest
 import uuid
 
 from django.utils.translation import gettext_lazy as _
+import pytest
 
-from catalog.models import Category, Item, ItemIssue, Manufactor
+from category.models import Category
+from item.models import Item
+from item_issue.models import ItemIssue
+from manufactor.models import Manufactor
 from users.models import CustomUser
 
 pytestmark = [pytest.mark.django_db]
@@ -36,7 +39,7 @@ class TestManufactoryModel:
 
     def test_get_absolute_url(self, db, init_db):
         manufactor = Manufactor.objects.get(manufactor_id=1)
-        assert(manufactor.get_absolute_url() == '/catalog/manufactor/1')
+        assert(manufactor.get_absolute_url() == '/manufactor/manufactor/1')
 
 
 class TestCategoryModel:
@@ -66,7 +69,7 @@ class TestCategoryModel:
 
     def test_get_absolute_url(self, db, init_db):
         category = Category.objects.get(category_id=1)
-        assert(category.get_absolute_url() == '/catalog/category/1')
+        assert(category.get_absolute_url() == '/category/category/1')
 
 
 class TestItemModel:
@@ -107,7 +110,7 @@ class TestItemModel:
 
     def test_get_absolute_url(self, db, init_db):
         item = Item.objects.get(item_id=init_db)
-        assert(item.get_absolute_url() == '/catalog/item/counter/' + str(init_db))
+        assert(item.get_absolute_url() == '/item/item/counter/' + str(init_db))
 
 
 class TestItemIssueModel:

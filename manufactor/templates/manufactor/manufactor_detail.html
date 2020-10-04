@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>{{ page_title }} - {{ manufactor.name }}</title>{% endblock %}
+
+{% block content %}
+  <h1 class="m-top-20">{{ manufactor.name }}</h1>
+
+    <table>
+	  <tr>
+		  <td class="font-weight-bold">Название:</td>
+		  <td class="p-left-10">{{ manufactor.name }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Описание:</td>
+		  <td class="p-left-10">{{ manufactor.summary }}</td>
+	  </tr>
+	  <tr>
+		  <td class="font-weight-bold">Дата создания:</td>
+		  <td class="p-left-10">{{ manufactor.created_date|date:"d.m.Y H:i:s" }}</td>
+	  </tr>
+  </table>
+  
+  <div class="list-group list-group-horizontal m-top-20">
+	  <a href="{% url 'manufactor_update' manufactor.manufactor_id %}" class="col-lg-3 list-group-item btn-add">Редактировать</a>
+	  <a href="{% url 'manufactor_delete' manufactor.manufactor_id %}" class="col-lg-3 list-group-item m-left-30 btn-del">Удалить</a>
+  </div>
+
+{% endblock %}

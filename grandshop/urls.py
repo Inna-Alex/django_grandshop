@@ -24,10 +24,17 @@ from register import views as v
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('catalog/', include('catalog.urls')),
+    path('basket/', include('basket.urls')),
+    path('category/', include('category.urls')),
+    path('manufactor/', include('manufactor.urls')),
+    path('item_issue/', include('item_issue.urls')),
+    path('item/', include('item.urls')),
+    path('order/', include('order.urls')),
     path('', RedirectView.as_view(url='/catalog/', permanent=True)),
     path('register/', v.register, name='register'),
     # path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/login/', v.login, name='login'),
     path('accounts/logout/', v.logout, name='logout'),
-    path('api/', include('catalog.urls_api')),
+    path('api/', include('category.api_urls')),
+    path('api/', include('manufactor.api_urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
-from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as login_user, logout as logout_user
+from django.shortcuts import redirect, render
+
+from .forms import LoginForm, RegisterForm
 
 active_tab_login = '\'login\''
 active_tab_logout = '\'logout\''

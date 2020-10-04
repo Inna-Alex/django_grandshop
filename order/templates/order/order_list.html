@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>{{ page_title }}</title>{% endblock %}
+
+{% block content %}
+    <h1 class="inline-b m-top-20">Список заказов</h1>
+
+    {% if order_list %}
+    <ul class="non-list">
+
+      {% for order in order_list %}
+        {% cycle 'one-by-one' '' as ordercolors silent %}
+          <li class="{{ ordercolors }}">
+          <a href="{{ order.get_absolute_url }}" class="non-a">Ваш заказ: {{ order }}</a>
+          </li>
+      {% endfor %}
+	  
+    </ul>
+    {% else %}
+      <p>В интернет-магазине нет ни одного Вашего заказа</p>
+    {% endif %}
+{% endblock %}

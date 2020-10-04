@@ -31,18 +31,25 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'basket.apps.BasketConfig',
     'catalog.apps.CatalogConfig',
+    'category.apps.CategoryConfig',
+    'item.apps.ItemConfig',
+    'item_issue.apps.ItemIssueConfig',
+    'manufactor.apps.ManufactorConfig',
+    'order.apps.OrderConfig',
     'register.apps.RegisterConfig',
     'crispy_forms',
     'rest_framework',
     'users',
-    'widget_tweaks',
+
 ]
 
 MIDDLEWARE = [

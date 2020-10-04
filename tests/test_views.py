@@ -1,10 +1,13 @@
-import pytest
+import html
 import uuid
 
 from django.urls import reverse
+import pytest
 
-from catalog.forms import IssueForm
-from catalog.models import Category, Item, Manufactor
+from category.models import Category
+from item.models import Item
+from item_issue.forms import IssueForm
+from manufactor.models import Manufactor
 from users.models import CustomUser
 
 pytestmark = [pytest.mark.django_db]
@@ -243,7 +246,7 @@ class TestItemView:
     def test_item_counter_redirect_view(self, db, client, create_item):
         item = create_item
         url = reverse('item_counter', kwargs={'pk': item.pk})
-        url_redirect = '/catalog/item/{0}'.format(item.pk)
+        url_redirect = '/item/item/{0}'.format(item.pk)
         response = client.get(url, follow=True)
         assert response.status_code == 200
         assert url_redirect in str(response.context)
@@ -256,12 +259,12 @@ class TestItemView:
     def test_item_create_form_invalid_price(self, db, client, create_item_params):
         response = client.post(reverse('item_create'), data=create_item_params(price=0))
         assert response.status_code == 200
-        assert 'Enter a number' in str(response.content)
+        assert html.escape('Цена должна быть > 0') in str(response.content, 'utf-8')
 
     def test_item_create_form_invalid_quantity(self, db, client, create_item_params):
         response = client.post(reverse('item_create'), data=create_item_params(quantity=-1))
         assert response.status_code == 200
-        assert 'Enter a whole number' in str(response.content)
+        assert html.escape('Количество должно быть >= 0') in str(response.content, 'utf-8')
 
     def test_items_news_list_returns_one_thing(self, db, client, create_item):
         url = reverse('item_news')
@@ -276,7 +279,7 @@ class TestOrderView:
         url = reverse('orders')
         response = client.get(url)
         assert response.status_code == 302
-        assert response.url == '/accounts/login/?next=/catalog/orders/'
+        assert response.url == '/accounts/login/?next=/order/orders/'
 
 
 class TestItemIssueView:
@@ -294,7 +297,7 @@ class TestItemIssueView:
         url = reverse('item_issue_send')
         response = client.get(url)
         assert response.status_code == 302
-        assert response.url == '/accounts/login/?next=/catalog/items/send_issue/'
+        assert response.url == '/accounts/login/?next=/item_issue/send_issue/'
 
     def test_item_issue_create_view_if_logged_in(self, db, create_item, auto_login_user):
         client, user = auto_login_user()
