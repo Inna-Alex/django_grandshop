@@ -14,7 +14,7 @@ For the modules Manufacturers, Categories, Products, a standard CRUD is implemen
 9. **Rest API** using DRF
 
 The following functionality is also available:
-1. The Your Orders page - displays a list of orders of an authorized user. Not available if the user is not logged in. The Create order button is also available here. When choosing a product to add to the order, it is enough to fill in the Product and Quantity fields, The price is calculated automatically (AJAX is used to display the calculated product price depending on the quantity on the user's screen).
+1. The Your Orders page - displays a list of orders of an authorized user. Not available if the user is not logged in. The Create order button is also available here. When choosing a product to add to the order, it is enough to fill in the Product and Quantity fields, The price is calculated automatically (AJAX is used to display the calculated product price depending on the quantity on the user's screen). When paying for an order, users with the Managers role receive a letter to the mail (MailBox) about the need to confirm the paid order (implemented by using signals in the module **Orders**)
 2. The order detail page displays information about the order (status, customer) as well as all ordered products. On the same page, the buttons Edit, Delete are available for the selected products (custom forms are used), as well as the button Add a new product to the order. Here you can also delete an order by clicking the corresponding button, followed by confirmation of deleting the order (the order and all associated products will be deleted - custom functionality).
 3. Using **DRF**, an API (CRUD) is written for the Categories and Manufacturers modules. Both APIView and serializers were used.
 4. Auto tests of 2 types have been written for the project:
@@ -34,4 +34,4 @@ To run the project, you need Django preinstalled, as well as the following modul
                       
 Commands are given for installing modules via pip.
 
-The project has a lot to improve and add, and the project is not ready for production, but it implements all the basic Django concepts (User model, CRUD, request logging, custom templates and template filters, custom migration, AJAX, unit tests) and some others.
+The project has a lot to improve and add, and the project is not ready for production, but it implements all the basic Django concepts (User model, CRUD, request logging, custom templates and template filters, custom migration, AJAX, signals, unit tests, pytests) and some others.
