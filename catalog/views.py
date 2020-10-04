@@ -1,13 +1,8 @@
 from django.shortcuts import render
 
-from .basket_views import *
-from .category_views import *
-from .item_views import *
-from .item_issue_views import *
-from .manufactor_views import *
-from .models import Category, Item, Manufactor
-from .order_item_views import *
-from .order_views import *
+from category.models import Category
+from item.models import Item
+from manufactor.models import Manufactor
 
 
 def index(request):

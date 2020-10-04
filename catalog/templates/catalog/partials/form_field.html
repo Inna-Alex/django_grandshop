@@ -1,0 +1,31 @@
+{% load widget_tweaks %}
+
+{% block field_controls %}
+    <tr>
+
+        {% block label %}
+            <th>{{ field.label_tag|safe }}</th>
+        {% endblock %}
+
+        <td>
+            {% block field %}
+                {% render_field field class+=class_name %}
+            {% endblock %}
+
+            {% block errors %}
+                {% for error in field.errors %}
+                    <span class="error-block"><i class="fa fa-exclamation"></i>&nbsp;&nbsp;{{ error }}</span>
+                {% endfor %}
+            {% endblock %}
+
+            {% block help_text %}
+                {% if field.help_text %}
+                    <br><span class='help-block'>
+                        {{ field.help_text|safe }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+        </td>
+
+    </tr>
+{% endblock %}
