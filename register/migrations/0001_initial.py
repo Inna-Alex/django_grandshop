@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomerUser',
             fields=[
-                ('user_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, to=settings.AUTH_USER_MODEL)),
+                # ('user_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, to=settings.AUTH_USER_MODEL)),
                 ('customer_id', models.UUIDField(default=uuid.uuid4, help_text='Уникальный ID', primary_key=True, serialize=False)),
                 ('phone', models.SlugField(max_length=11)),
             ],
